@@ -153,10 +153,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4617731c31f16649944875dba73b7d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  moveSpeed: 5
-  jumpForce: 7
-  moveSensitivity: 2
+  thrustForce: 1
+  rotationSpeed: 1
+  boostMultiplier: 2
+  stabilizerForce: 3
   playerCamera: {fileID: 1159938649}
+  jetpackParticles: {fileID: 0}
+  jetpackAudio: {fileID: 0}
 --- !u!54 &272449605
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -179,10 +182,10 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!114 &272449606
 MonoBehaviour:
@@ -290,7 +293,7 @@ MeshFilter:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 272449603}
-  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!4 &272449610
 Transform:
   m_ObjectHideFlags: 0
