@@ -86,15 +86,6 @@ public class PlayerController : MonoBehaviour
 
     private void HandleCameraRotation()
     {
-        _lookInput = _playerInput.actions["Look"].ReadValue<Vector2>();
-        
-        float mouseX = _lookInput.x * _floatData.rotationSpeed;
-        transform.Rotate(0, mouseX, 0);
-
-
-        float mouseY = _lookInput.y * _floatData.rotationSpeed;
-        _xRotation -= mouseY;
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
         playerCamera.localRotation = Quaternion.Euler(_xRotation, 0, 0);
         
         HandleBodyTilt();
