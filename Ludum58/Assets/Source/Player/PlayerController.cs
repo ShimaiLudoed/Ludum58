@@ -8,8 +8,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform playerCamera;
     [SerializeField] private ParticleSystem jetpackParticles;
     [SerializeField] private AudioSource jetpackAudio;
-
-    private Star.StarFactory starFactory;
     
     private FloatData _floatData;
     private PlayerInput _playerInput;
