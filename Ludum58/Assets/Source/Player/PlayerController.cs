@@ -1,19 +1,15 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
-public class SpacePlayerController : MonoBehaviour
-{
-    [Header("Jetpack Movement")]
-    [SerializeField] private float thrustForce = 15f;
-    [SerializeField] private float rotationSpeed = 1f;
-    [SerializeField] private float boostMultiplier = 2f;
-    [SerializeField] private float stabilizerForce = 3f;
-    
-    [Header("References")]
+public class PlayerController : MonoBehaviour
+{ 
     [SerializeField] private Transform playerCamera;
     [SerializeField] private ParticleSystem jetpackParticles;
     [SerializeField] private AudioSource jetpackAudio;
-
+    
+    private FloatData _floatData;
     private PlayerInput _playerInput;
     private Rigidbody _rb;
     private Vector2 _moveInput;
@@ -22,7 +18,14 @@ public class SpacePlayerController : MonoBehaviour
     
     private bool _isBoosting = false;
     private Vector3 _thrustDirection;
+    public event Action OnTakeStar;
 
+    [Inject]
+    public void Construct(FloatData floatData)
+    {
+        _floatData = floatData;
+    }
+    
     private void Start()
     {
         _playerInput = GetComponent<PlayerInput>();
@@ -33,7 +36,7 @@ public class SpacePlayerController : MonoBehaviour
         _rb.useGravity = false;
         
         Cursor.lockState = CursorLockMode.Locked;
-        _rb.linearVelocity = Vector3.forward * 2;
+        _rb.linearVelocity = Vector3.forward * _floatData.startForce;
     }
     
 
@@ -43,10 +46,10 @@ public class SpacePlayerController : MonoBehaviour
         HandleCameraRotation();
         HandleStabilization();
         UpdateJetpackEffects();
-        
+
         if (_playerInput.actions["Attack"].triggered)
         {
-            EmergencyBrake();
+            OnTakeStar?.Invoke();
         }
     }
 
@@ -74,7 +77,7 @@ public class SpacePlayerController : MonoBehaviour
             
         _thrustDirection.y += verticalThrust;
         
-        float currentThrust = _isBoosting ? thrustForce * boostMultiplier : thrustForce;
+        float currentThrust = _isBoosting ? _floatData.thrustForce * _floatData.boostMultiplier : _floatData.thrustForce;
         if (_thrustDirection.magnitude > 0.1f)
         {
             _rb.AddForce(_thrustDirection * currentThrust);
@@ -85,11 +88,11 @@ public class SpacePlayerController : MonoBehaviour
     {
         _lookInput = _playerInput.actions["Look"].ReadValue<Vector2>();
         
-        float mouseX = _lookInput.x * rotationSpeed;
+        float mouseX = _lookInput.x * _floatData.rotationSpeed;
         transform.Rotate(0, mouseX, 0);
 
 
-        float mouseY = _lookInput.y * rotationSpeed;
+        float mouseY = _lookInput.y * _floatData.rotationSpeed;
         _xRotation -= mouseY;
         _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
         playerCamera.localRotation = Quaternion.Euler(_xRotation, 0, 0);
@@ -117,13 +120,13 @@ public class SpacePlayerController : MonoBehaviour
         if (_lookInput.magnitude < 0.1f)
         {
             Vector3 currentAngularVelocity = _rb.angularVelocity;
-            currentAngularVelocity = Vector3.Lerp(currentAngularVelocity, Vector3.zero, stabilizerForce * Time.deltaTime);
+            currentAngularVelocity = Vector3.Lerp(currentAngularVelocity, Vector3.zero, _floatData.stabilizerForce * Time.deltaTime);
             _rb.angularVelocity = currentAngularVelocity;
         }
         
         if (_thrustDirection.magnitude < 0.1f && _rb.linearVelocity.magnitude < 0.5f)
         {
-            _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, stabilizerForce * Time.deltaTime);
+            _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, Vector3.zero, _floatData.stabilizerForce * Time.deltaTime);
         }
     }
 
@@ -159,26 +162,6 @@ public class SpacePlayerController : MonoBehaviour
                 if (jetpackAudio.volume < 0.1f)
                     jetpackAudio.Stop();
             }
-        }
-    }
-
-    private void EmergencyBrake()
-    {
-
-        _rb.linearVelocity = Vector3.zero;
-        _rb.angularVelocity = Vector3.zero;
-        if (jetpackParticles != null)
-        {
-            jetpackParticles.Emit(30);
-        }
-    }
-
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("SpaceJunk"))
-        {
-            _rb.linearVelocity *= 0.7f;
         }
     }
 }
