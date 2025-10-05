@@ -7,9 +7,7 @@ public class Meteor : MonoBehaviour
 {
     private LayerData _layerData;
     [SerializeField] private Mesh[] meteorMeshes;
-    [SerializeField] private Material[] meteorMaterials;
     private MeshFilter meshFilter;
-    private MeshRenderer meshRenderer;
     [Inject]
     public void Construct(LayerData layerData)
     {
@@ -18,21 +16,15 @@ public class Meteor : MonoBehaviour
 
     private void Start()
     {
+       meshFilter = GetComponent<MeshFilter>();
         SetupRandomAppearance();
     }
 
-    void SetupRandomAppearance()
+   void SetupRandomAppearance()
     {
-        meshFilter = GetComponent<MeshFilter>();
-        meshRenderer = GetComponent<MeshRenderer>();
-        
         if (meteorMeshes != null && meteorMeshes.Length > 0)
         {
             meshFilter.mesh = meteorMeshes[Random.Range(0, meteorMeshes.Length)];
-        }
-        if (meteorMaterials != null && meteorMaterials.Length > 0)
-        {
-            meshRenderer.material = meteorMaterials[Random.Range(0, meteorMaterials.Length)];
         }
     }
 
