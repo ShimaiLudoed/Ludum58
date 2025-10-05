@@ -111,7 +111,7 @@ public class SingleTunnelSpawner : MonoBehaviour
             }
             else if (spawnMeteor)
             {
-                Meteor meteor = _meteorFactory.Create(_layerData, _playerStats);
+                Meteor meteor = _meteorFactory.Create(_layerData,_playerStats);
                 meteor.transform.position = worldPos;
                 meteor.transform.rotation = Quaternion.identity;
                 spawned.Add(meteor.gameObject);

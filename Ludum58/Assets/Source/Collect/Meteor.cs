@@ -5,11 +5,13 @@ using Random = UnityEngine.Random;
 
 public class Meteor : MonoBehaviour
 {
+    [SerializeField] private int damage;
     private LayerData _layerData;
+    private PlayerStats _playerStats;
     [SerializeField] private Mesh[] meteorMeshes;
     private MeshFilter meshFilter;
     [Inject]
-    public void Construct(LayerData layerData)
+    public void Construct(LayerData layerData, PlayerStats playerStats)
     {
         _layerData = layerData;
     }
@@ -32,10 +34,11 @@ public class Meteor : MonoBehaviour
     {
         if(LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
         {
+            _playerStats.TakeDamage(damage);
             Destroy(gameObject);
         }
     }
 
-    public class MeteorFactory : PlaceholderFactory<LayerData, Meteor>
+    public class MeteorFactory : PlaceholderFactory<LayerData, PlayerStats, Meteor>
     { }
 }

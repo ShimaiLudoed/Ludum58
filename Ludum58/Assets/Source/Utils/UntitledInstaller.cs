@@ -14,8 +14,8 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private Star star;
     [SerializeField] private Meteor meteor;
     [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
-    [SerializeField] private Score score;
-    [FormerlySerializedAs("hpsystem")] [SerializeField] private PlayerStats playerStats;
+    [SerializeField] private Score score; 
+    [SerializeField] private PlayerStats playerStats;
     public override void InstallBindings()
     {
         //Container.Bind<ISound>().To<Sound>().AsSingle().NonLazy();
