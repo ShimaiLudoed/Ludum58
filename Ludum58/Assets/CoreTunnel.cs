@@ -34,18 +34,21 @@ public class SingleTunnelSpawner : MonoBehaviour
     private Meteor.MeteorFactory _meteorFactory;
     private Star.StarFactory _starFactory;
     private LayerData _layerData;
+    private PlayerStats _playerStats;
 
     [Inject]
     public void Construct(
         PlayerController playerController,
         Star.StarFactory starFactory,
         LayerData layerData,
-        Meteor.MeteorFactory meteorFactory)
+        Meteor.MeteorFactory meteorFactory,
+        PlayerStats playerStats)
     {
         _playerController = playerController;
         _starFactory = starFactory;
         _layerData = layerData;
         _meteorFactory = meteorFactory;
+        _playerStats = playerStats;
     }
     
     void Start()
@@ -108,7 +111,7 @@ public class SingleTunnelSpawner : MonoBehaviour
             }
             else if (spawnMeteor)
             {
-                Meteor meteor = _meteorFactory.Create(_layerData);
+                Meteor meteor = _meteorFactory.Create(_layerData, _playerStats);
                 meteor.transform.position = worldPos;
                 meteor.transform.rotation = Quaternion.identity;
                 spawned.Add(meteor.gameObject);

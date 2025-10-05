@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 public class UntitledInstaller : MonoInstaller
@@ -14,6 +15,7 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private Meteor meteor;
     [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
     [SerializeField] private Score score;
+    [FormerlySerializedAs("hpsystem")] [SerializeField] private PlayerStats playerStats;
     public override void InstallBindings()
     {
         //Container.Bind<ISound>().To<Sound>().AsSingle().NonLazy();
@@ -21,7 +23,8 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<PlayerController>().FromInstance(playerController).AsSingle();
         Container.Bind<Star>().FromInstance(star).AsTransient();
         Container.Bind<Meteor>().FromInstance(meteor).AsTransient();
-        Container.BindFactory<LayerData, Meteor, Meteor.MeteorFactory>().FromComponentInNewPrefab(meteor);
+        Container.Bind<PlayerStats>().FromInstance(playerStats).AsSingle().NonLazy();
+        Container.BindFactory<LayerData,PlayerStats, Meteor, Meteor.MeteorFactory>().FromComponentInNewPrefab(meteor);
         Container.BindFactory<LayerData,PlayerController,Star,Star.StarFactory>().FromComponentInNewPrefab(star);
         
         Container.Bind<SingleTunnelSpawner>().FromInstance(singleTunnelSpawner).AsSingle();

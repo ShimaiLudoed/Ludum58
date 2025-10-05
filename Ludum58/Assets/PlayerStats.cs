@@ -1,11 +1,11 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerStats : MonoBehaviour
 {
     [Header("Игровые параметры")]
-    public int maxHP = 100;
-    public int currentHP;
+    public int HP = 100;
     public int score = 0;
 
     [Header("UI элементы")]
@@ -14,7 +14,6 @@ public class PlayerStats : MonoBehaviour
 
     void Start()
     {
-        currentHP = maxHP;
         UpdateUI();
     }
 
@@ -26,18 +25,17 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        currentHP -= amount;
-        if (currentHP <= 0)
+        HP -= amount;
+        if (HP <= 0)
         {
-            currentHP = 0;
-            Debug.Log("💀 Игрок погиб");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
         UpdateUI();
     }
 
     void UpdateUI()
     {
-        if (hpText != null) hpText.text = $"HP: {currentHP}";
+        if (hpText != null) hpText.text = $"HP: {HP}";
         if (scoreText != null) scoreText.text = $"Score: {score}";
     }
 }

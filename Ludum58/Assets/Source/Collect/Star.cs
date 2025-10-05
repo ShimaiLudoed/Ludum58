@@ -24,6 +24,7 @@ public class Star : MonoBehaviour
     if(LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
     {
       _playerController.OnTakeStar += TakeStar;
+      Debug.Log("Зашёл");
     }
   }
 
@@ -37,9 +38,10 @@ public class Star : MonoBehaviour
 
   private void TakeStar()
   {
+    Destroy(gameObject);
     Debug.Log("piy");
     _score.AddScore();
-    Destroy(gameObject);
+    
   }
   public class StarFactory : PlaceholderFactory<LayerData,PlayerController, Star>
   { }

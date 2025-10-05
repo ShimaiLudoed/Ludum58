@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 public class DamageObject : MonoBehaviour
@@ -16,6 +17,7 @@ public class DamageObject : MonoBehaviour
     {
         if (stats != null && LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
         {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             stats.TakeDamage(damage);
             Destroy(gameObject);
         }
