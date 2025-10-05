@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting;
 using UnityEngine;
 using Zenject;
+using Random = UnityEngine.Random;
 
 public class Star : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class Star : MonoBehaviour
   private PlayerController _playerController;
   private Score _score;
   private ISound _sound;
+  [SerializeField] private Mesh[] meteorMeshes;
+  private MeshFilter meshFilter;
   
   [Inject]
   public void Construct(LayerData layerData, PlayerController playerController, Score score)
@@ -28,6 +31,20 @@ public class Star : MonoBehaviour
     }
   }
 
+  private void Start()
+  {
+    SetupRandomAppearance();
+  }
+
+  void SetupRandomAppearance()
+  {
+    meshFilter = GetComponent<MeshFilter>();
+        
+    if (meteorMeshes != null && meteorMeshes.Length > 0)
+    {
+      meshFilter.mesh = meteorMeshes[Random.Range(0, meteorMeshes.Length)];
+    }
+  }
   private void OnDestroy()
   {
     if (_playerController != null)
