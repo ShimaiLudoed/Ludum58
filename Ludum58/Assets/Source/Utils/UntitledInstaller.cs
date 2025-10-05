@@ -12,16 +12,19 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Star star;
     [SerializeField] private Meteor meteor;
-   // [SerializeField] private Score score;
+    [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
+    [SerializeField] private Score score;
     public override void InstallBindings()
     {
         //Container.Bind<ISound>().To<Sound>().AsSingle().NonLazy();
-      //  Container.Bind<Score>().FromInstance(score).AsSingle();
+        Container.Bind<Score>().FromInstance(score).AsSingle();
         Container.Bind<PlayerController>().FromInstance(playerController).AsSingle();
         Container.Bind<Star>().FromInstance(star).AsTransient();
-        Container.BindFactory<LayerData,PlayerController,Star,Star.StarFactory>().FromComponentInNewPrefab(star);
         Container.Bind<Meteor>().FromInstance(meteor).AsTransient();
+        Container.BindFactory<LayerData, Meteor, Meteor.MeteorFactory>().FromComponentInNewPrefab(meteor);
+        Container.BindFactory<LayerData,PlayerController,Star,Star.StarFactory>().FromComponentInNewPrefab(star);
         
+        Container.Bind<SingleTunnelSpawner>().FromInstance(singleTunnelSpawner).AsSingle();
         Container.Bind<ParticleData>().FromInstance(particleData).AsSingle().NonLazy();
         Container.Bind<AudioData>().FromInstance(audioData).AsSingle().NonLazy();
         Container.Bind<FloatData>().FromInstance(floatData).AsSingle().NonLazy();
