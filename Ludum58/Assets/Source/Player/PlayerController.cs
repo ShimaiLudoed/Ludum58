@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleJetpackThrust();
-        HandleCameraRotation();
+        //HandleCameraRotation();
         HandleStabilization();
         UpdateJetpackEffects();
 
@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
             OnTakeStar?.Invoke();
         }
     }
+    
+    
 
     private void HandleJetpackThrust()
     {
@@ -63,22 +65,22 @@ public class PlayerController : MonoBehaviour
 
         Vector3 cameraForward = playerCamera.forward;
         Vector3 cameraRight = playerCamera.right;
-        
+
         cameraForward.y = 0f;
         cameraRight.y = 0f;
         cameraForward.Normalize();
         cameraRight.Normalize();
-        
+
         _thrustDirection = (cameraForward * _moveInput.y + cameraRight * _moveInput.x);
-        
+
         float verticalThrust = 0f;
-        if (_playerInput.actions["Jump"].IsPressed()) 
+        if (_playerInput.actions["Jump"].IsPressed())
             verticalThrust = 1f;
         else if (_playerInput.actions["Crouch"].IsPressed())
             verticalThrust = -1f;
-            
+
         _thrustDirection.y += verticalThrust;
-        
+
         float currentThrust = _isBoosting ? _floatData.thrustForce * _floatData.boostMultiplier : _floatData.thrustForce;
         if (_thrustDirection.magnitude > 0.1f)
         {
