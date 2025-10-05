@@ -1,67 +1,44 @@
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 public class SingleTunnelSpawner : MonoBehaviour
 {
+    [Header("Игрок")]
+    public Transform player;
+
     [Header("Параметры тоннеля")]
-    [SerializeField] private Transform tunnelCenter;
-    [SerializeField] private float innerRadius = 3f;
-    [SerializeField] private float outerRadius = 8f;
-    [SerializeField] private float tunnelLength = 20f;
+    public Transform tunnelCenter;
+    public float innerRadius = 3f;
+    public float outerRadius = 8f;
+    public float tunnelLength = 20f;
 
     [Header("Параметры спавна")]
-    [SerializeField] private int objectsPerBatch = 10;
-    [SerializeField] private float spawnSpeed = 1.0f;
-    [SerializeField] private float moveSpeed = 20f;
-    [SerializeField] private float despawnZ = -30f;
+    public int objectsPerBatch = 10;
+    public float spawnSpeed = 1.0f;       // пакетов в секунду
+    public float moveSpeed = 20f;
+    public float despawnZ = -30f;
 
-    [Header("Вероятности спавна")]
+    [Header("Префабы")]
+    public GameObject[] damagePrefabs;     
+    public GameObject[] collectiblePrefabs;
+
     [Range(0f, 1f)]
-    [SerializeField] private float starChance = 0.3f;
-    [Range(0f, 1f)]
-    [SerializeField] private float meteorChance = 0.5f;
+    public float collectibleChance = 0.3f;
 
     [Header("Визуализация тоннеля")]
-    [SerializeField] private Color tunnelColor = Color.cyan;
+    public Color tunnelColor = Color.cyan;
 
     private List<GameObject> spawned = new List<GameObject>();
     private float spawnTimer;
     private float zSpawnOffset;
 
-    // Zenject зависимости
-    private PlayerController _playerController;
-    private Meteor.MeteorFactory _meteorFactory;
-    private Star.StarFactory _starFactory;
-    private LayerData _layerData;
-
-    [Inject]
-    public void Construct(
-        PlayerController playerController,
-        Star.StarFactory starFactory,
-        LayerData layerData,
-        Meteor.MeteorFactory meteorFactory)
-    {
-        _playerController = playerController;
-        _starFactory = starFactory;
-        _layerData = layerData;
-        _meteorFactory = meteorFactory;
-    }
-    
     void Start()
     {
         spawnTimer = 1f / Mathf.Max(spawnSpeed, 0.01f);
-        
-        if (_playerController == null)
-        {
-            Debug.LogError("PlayerController not injected!");
-        }
     }
 
     void Update()
     {
-        if (_playerController == null) return;
-        
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0f)
         {
@@ -78,14 +55,11 @@ public class SingleTunnelSpawner : MonoBehaviour
     {
         for (int i = 0; i < objectsPerBatch; i++)
         {
-            float randomValue = Random.value;
-            
-            // Определяем что спавнить
-            bool spawnStar = randomValue < starChance;
-            bool spawnMeteor = randomValue >= starChance && randomValue < starChance + meteorChance;
-            
-            // Если ничего не выпало - пропускаем
-            if (!spawnStar && !spawnMeteor) continue;
+            bool spawnCollectible = Random.value < collectibleChance;
+            GameObject[] pool = spawnCollectible ? collectiblePrefabs : damagePrefabs;
+            if (pool == null || pool.Length == 0) continue;
+
+            GameObject prefab = pool[Random.Range(0, pool.Length)];
 
             float angle = Random.Range(0f, Mathf.PI * 2);
             float radius = Random.Range(innerRadius, outerRadius);
@@ -94,25 +68,12 @@ public class SingleTunnelSpawner : MonoBehaviour
             Vector3 localPos = new Vector3(
                 Mathf.Cos(angle) * radius,
                 Mathf.Sin(angle) * radius,
-                _playerController.transform.position.z + zOffset
+                player != null ? player.position.z + zOffset : zOffset
             );
 
             Vector3 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
-            
-            if (spawnStar)
-            {
-                Star star = _starFactory.Create(_layerData, _playerController);
-                star.transform.position = worldPos;
-                star.transform.rotation = Quaternion.identity;
-                spawned.Add(star.gameObject);
-            }
-            else if (spawnMeteor)
-            {
-                Meteor meteor = _meteorFactory.Create(_layerData);
-                meteor.transform.position = worldPos;
-                meteor.transform.rotation = Quaternion.identity;
-                spawned.Add(meteor.gameObject);
-            }
+            GameObject obj = Instantiate(prefab, worldPos, prefab.transform.rotation);
+            spawned.Add(obj);
         }
     }
 
@@ -136,7 +97,7 @@ public class SingleTunnelSpawner : MonoBehaviour
                 continue;
             }
 
-            if (obj.transform.position.z < _playerController.transform.position.z + despawnZ)
+            if (player != null && obj.transform.position.z < player.position.z + despawnZ)
             {
                 Destroy(obj);
                 spawned.RemoveAt(i);

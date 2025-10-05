@@ -11,11 +11,11 @@ public class Star : MonoBehaviour
   private ISound _sound;
   
   [Inject]
-  public void Construct(LayerData layerData, PlayerController playerController, Score score)
+  public void Construct(LayerData layerData, PlayerController playerController)
   {
     _layerData = layerData;
     _playerController = playerController;
-    _score = score;
+    //_score = score;
    // _sound = sound;
   }
   
@@ -29,16 +29,13 @@ public class Star : MonoBehaviour
 
   private void OnDestroy()
   {
-    if (_playerController != null)
-    {
-      _playerController.OnTakeStar -= TakeStar; 
-    }
+    _playerController.OnTakeStar -= TakeStar;
   }
 
   private void TakeStar()
   {
     Debug.Log("piy");
-    _score.AddScore();
+    //_score.AddScore();
     Destroy(gameObject);
   }
   public class StarFactory : PlaceholderFactory<LayerData,PlayerController, Star>

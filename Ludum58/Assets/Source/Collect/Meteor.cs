@@ -4,15 +4,8 @@ using Zenject;
 
 public class Meteor : MonoBehaviour
 {
-    private LayerData _layerData;
-
-    [Inject]
-    public void Construct(LayerData layerData)
-    {
-        _layerData = layerData;
-    }
-
-    private void OnTriggerEnter (Collider other)
+    private LayerData _layerData; 
+    private void OnCollisionEnter(Collision other)
     {
         if(LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
         {
@@ -20,6 +13,6 @@ public class Meteor : MonoBehaviour
         }
     }
 
-    public class MeteorFactory : PlaceholderFactory<LayerData, Meteor>
+    public class MeteorFactory : PlaceholderFactory<LayerData,PlayerController, Meteor>
     { }
 }

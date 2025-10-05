@@ -1,20 +1,14 @@
 using UnityEngine;
-using Zenject;
 
+[RequireComponent(typeof(Collider))]
 public class DamageObject : MonoBehaviour
 {
     public PlayerStats stats;
     public int damage = 10;
-    private LayerData _layerData;
 
-    [Inject]
-    public void Construct(LayerData layerData)
-    {
-        _layerData = layerData;
-    }
     void OnTriggerEnter(Collider other)
     {
-        if (stats != null && LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
+        if (stats != null && other.CompareTag("Player"))
         {
             stats.TakeDamage(damage);
             Destroy(gameObject);
