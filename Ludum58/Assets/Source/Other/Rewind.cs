@@ -1,76 +1,36 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Playables;
+using UnityEngine.UI;
+using Unity.Cinemachine;
 
-public class SceneRewindManager : MonoBehaviour
+public class CinemachineSwitcher : MonoBehaviour
 {
-    [Header("Обычные катсцены")]
-    public PlayableDirector normal1;
-    public PlayableDirector normal2;
+    [Header("Виртуальные камеры")]
+    public CinemachineCamera camA;
+    public CinemachineCamera camB;
 
-    [Header("Реверсивные версии")]
-    public PlayableDirector reverse1;
-    public PlayableDirector reverse2;
+    [Header("Кнопки переключения")]
+    public Button buttonToB;
+    public Button buttonToA;
 
-    private PlayableDirector lastNormalPlayed;
+    [Header("Приоритет")]
+    public int priorityA = 10;
+    public int priorityB = 20;
 
-    void Update()
+    void Awake()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (lastNormalPlayed != null)
-            {
-                if (lastNormalPlayed == normal1 && reverse1 != null)
-                {
-                    PlayReverse(reverse1);
-                }
-                else if (lastNormalPlayed == normal2 && reverse2 != null)
-                {
-                    PlayReverse(reverse2);
-                }
-            }
-        }
+        if (buttonToB != null)
+            buttonToB.onClick.AddListener(() => SwitchTo(camB, camA));
+
+        if (buttonToA != null)
+            buttonToA.onClick.AddListener(() => SwitchTo(camA, camB));
     }
 
-    public void PlayNormal1()
+    void SwitchTo(CinemachineCamera toCam, CinemachineCamera fromCam)
     {
-        PlayNormal(normal1);
-    }
+        if (toCam == null || fromCam == null) return;
 
-    public void PlayNormal2()
-    {
-        PlayNormal(normal2);
-    }
-
-    private void PlayNormal(PlayableDirector pd)
-    {
-        if (pd == null) return;
-        pd.timeUpdateMode = DirectorUpdateMode.GameTime;
-        pd.time = 0;
-        pd.Play();
-        lastNormalPlayed = pd;
-    }
-
-    private void PlayReverse(PlayableDirector pd)
-    {
-        StartCoroutine(DoReverse(pd));
-    }
-
-    private IEnumerator DoReverse(PlayableDirector pd)
-    {
-        // предполагаем, что reverse версия уже настроена в режиме Hold
-        pd.timeUpdateMode = DirectorUpdateMode.Manual;
-
-        double t = pd.duration;
-        while (t > 0)
-        {
-            t -= Time.deltaTime;
-            pd.time = Mathf.Max((float) t, 0f);
-            pd.Evaluate();
-            yield return null;
-        }
-
-        pd.Stop();
-        pd.timeUpdateMode = DirectorUpdateMode.GameTime;
+        // Дать большей приоритет новой
+        toCam.Priority = priorityB;
+        fromCam.Priority = priorityA;
     }
 }
