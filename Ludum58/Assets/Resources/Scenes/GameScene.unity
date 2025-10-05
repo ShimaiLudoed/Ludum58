@@ -5184,7 +5184,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 66931458}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.03838021, y: 0.94855994, z: -0.12656304, w: -0.28765056}
+  m_LocalRotation: {x: -0.033831894, y: 0.9637492, z: -0.14912798, w: -0.21864077}
   m_LocalPosition: {x: 97, y: 50.52, z: 176.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -23707,7 +23707,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd24bda21a7de94e86590356678cb09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FloatData
-  thrustForce: 2
+  thrustForce: 8
   rotationSpeed: 3
   boostMultiplier: 1
   stabilizerForce: 1
@@ -24628,7 +24628,7 @@ Transform:
   m_GameObject: {fileID: 1936605232}
   serializedVersion: 2
   m_LocalRotation: {x: 0.00014677845, y: 0.010261386, z: -0.014301744, w: -0.9998451}
-  m_LocalPosition: {x: 16.77, y: 49.01, z: 137.97}
+  m_LocalPosition: {x: 16.77, y: 58.92, z: 121.89}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -24652,7 +24652,7 @@ MonoBehaviour:
     AngularDampingMode: 0
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
-  FollowOffset: {x: 0.27, y: 4.28, z: -17.12}
+  FollowOffset: {x: 0.27, y: 4.28, z: -33.2}
 --- !u!1001 &2028976657
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24679,7 +24679,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 846155c80485d5040844f70a7f16eca4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 44.73
+      value: 54.64
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 846155c80485d5040844f70a7f16eca4, type: 3}
       propertyPath: m_LocalPosition.z
