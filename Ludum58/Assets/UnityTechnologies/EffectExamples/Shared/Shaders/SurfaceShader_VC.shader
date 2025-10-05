@@ -1,47 +1,88 @@
-﻿Shader "Custom/SurfaceShader_VC" {
-	Properties{
-		_Color("Color", Color) = (1,1,1,1)
-		_MainTex("Albedo (RGB)", 2D) = "white" {}
-		_Normal("Normap Map", 2D) = "bump" {}
+﻿Shader "Custom/URP/Surface_VC_Transparent"
+{
+    Properties
+    {
+        [MainTexture]_BaseMap ("Base Map", 2D) = "white" {}
+        [MainColor]_BaseColor ("Base Color", Color) = (1,1,1,1)
+        _Cutoff ("Alpha Clip", Range(0,1)) = 0     // 0 = без клипа
+        _ZWrite ("ZWrite (0/1)", Float) = 0
+        _Cull ("Cull", Float) = 2                  // 0=Off,1=Front,2=Back
+    }
+    SubShader
+    {
+        Tags
+        {
+            "RenderPipeline"="UniversalPipeline"
+            "Queue"="Transparent"
+            "RenderType"="Transparent"
+        }
 
-	}
-		SubShader{
-		Tags{ "Queue" = "Transparent" "RenderType" = "Transparent" }
-		LOD 200
-		Blend One OneMinusSrcAlpha
+        Pass
+        {
+            Name "Forward"
+            Tags { "LightMode"="UniversalForward" }
 
-		CGPROGRAM
-		// Physically based Standard lighting model, and enable shadows on all light types
-#pragma surface surf Standard fullforwardshadows vertex:vert alpha:fade
+            Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite [_ZWrite]
+            Cull [_Cull]
 
-		// Use shader model 3.0 target, to get nicer looking lighting
-#pragma target 3.0
+            HLSLPROGRAM
+            #pragma target 3.0
+            #pragma vertex   vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
 
-	sampler2D _MainTex;
-	sampler2D _Normal;
+            CBUFFER_START(UnityPerMaterial)
+                float4 _BaseColor;
+                float4 _BaseMap_ST;
+                float  _Cutoff;
+            CBUFFER_END
 
-	struct Input {
-		float2 uv_MainTex;
-		float4 vertex : SV_POSITION;
-		float4 color : COLOR;
-	};
+            TEXTURE2D(_BaseMap); SAMPLER(sampler_BaseMap);
 
-	void vert(inout appdata_full v, out Input o)
-	{
-		UNITY_INITIALIZE_OUTPUT(Input, o);
-		o.color = v.color;
-	}
+            struct Attributes
+            {
+                float3 positionOS : POSITION;
+                float2 uv         : TEXCOORD0;
+                float4 color      : COLOR;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
 
-	fixed4 _Color;
+            struct Varyings
+            {
+                float4 positionCS : SV_POSITION;
+                float2 uv         : TEXCOORD0;
+                float4 color      : COLOR;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+                UNITY_VERTEX_OUTPUT_STEREO
+            };
 
-	void surf(Input IN, inout SurfaceOutputStandard o) {
-		// Albedo comes from a texture tinted by color
-		fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
-		o.Albedo = c.rgb*IN.color;
-		o.Normal = UnpackNormal(tex2D(_Normal, IN.uv_MainTex));
-		o.Alpha = c.a*IN.color.a;
-	}
-	ENDCG
-	}
-		FallBack "Diffuse"
+            Varyings vert (Attributes v)
+            {
+                Varyings o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
+                o.positionCS = TransformObjectToHClip(v.positionOS);
+                o.uv = TRANSFORM_TEX(v.uv, _BaseMap);
+                o.color = v.color;
+                return o;
+            }
+
+            half4 frag (Varyings i) : SV_Target
+            {
+                UNITY_SETUP_STEREO_EYE_INDEX_POST_VERTEX(i);
+
+                half4 albedo = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, i.uv);
+                half4 col = albedo * _BaseColor * i.color;
+
+                // опциональный альфа-клип
+                if (_Cutoff > 0) clip(col.a - _Cutoff);
+
+                return col; // прозрачный Unlit
+            }
+            ENDHLSL
+        }
+    }
+    FallBack Off
 }
