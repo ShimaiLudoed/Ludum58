@@ -6,7 +6,7 @@ public class TrashDamage : MonoBehaviour
     [SerializeField] private int damage;
     private LayerData _layerData;
     private PlayerStats _playerStats;
-    [SerializeField] private Mesh[] meteorMeshes;
+    [SerializeField] private Mesh[] TrashMeshes;
     private MeshFilter meshFilter;
 
     [Inject]
@@ -24,9 +24,9 @@ public class TrashDamage : MonoBehaviour
 
     void SetupRandomAppearance()
     {
-        if (meteorMeshes != null && meteorMeshes.Length > 0)
+        if (TrashMeshes != null && TrashMeshes.Length > 0)
         {
-            meshFilter.mesh = meteorMeshes[Random.Range(0, meteorMeshes.Length)];
+            meshFilter.mesh = TrashMeshes[Random.Range(0, TrashMeshes.Length)];
         }
     }
 
