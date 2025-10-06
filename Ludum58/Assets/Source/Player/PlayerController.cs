@@ -40,7 +40,11 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         _rb.linearVelocity = Vector3.forward * _floatData.startForce;
     }
-    
+
+    private void OnDestroy()
+    {
+        Cursor.lockState = CursorLockMode.None;
+    }
 
     private void Update()
     {

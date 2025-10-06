@@ -9853,7 +9853,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 66931458}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.049072802, y: -0.858362, z: 0.08360877, w: 0.50380164}
+  m_LocalRotation: {x: -0.03838021, y: 0.94855994, z: -0.12656304, w: -0.28765056}
   m_LocalPosition: {x: 97, y: 50.52, z: 176.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17454,7 +17454,7 @@ MonoBehaviour:
   cameraSpeed: 0
   cameraDirection: {x: 0, y: 0, z: 1}
   player: {fileID: 2044848563}
-  boundaryX: 14
+  boundaryX: 12
   boundaryY: 9
   bounceStrength: 200
   bounceDamping: 7
@@ -37962,13 +37962,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2199209409292128041, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -17.7
+      objectReference: {fileID: 0}
     - target: {fileID: 4013615116020255874, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.501866
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 4013615116020255874, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 76
+      value: 58
       objectReference: {fileID: 0}
     - target: {fileID: 4013615116020255874, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: m_LocalPosition.z
@@ -38007,12 +38011,24 @@ PrefabInstance:
       value: Tunnels
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: moveSpeed
+      value: 50.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: starChance
-      value: 0.3
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: outerRadius
-      value: 80
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: meteorChance
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: objectsPerBatch
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -49417,6 +49433,10 @@ PlayableDirector:
     value: {fileID: 1637272132}
   - key: {fileID: -426677382180083189, guid: fd616d877d2140a41a6d2dc31a203947, type: 2}
     value: {fileID: 303289611}
+  - key: {fileID: -7246650238477667177, guid: fd616d877d2140a41a6d2dc31a203947, type: 2}
+    value: {fileID: 303289611}
+  - key: {fileID: 6698076881343098613, guid: fd616d877d2140a41a6d2dc31a203947, type: 2}
+    value: {fileID: 1637272132}
   m_ExposedReferences:
     m_References:
     - 4d0aa7c99d2194e40823495b67c0fc4d: {fileID: 1840007782}
