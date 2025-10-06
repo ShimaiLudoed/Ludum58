@@ -114,6 +114,7 @@ public class SingleTunnelSpawner : MonoBehaviour
                 meteor.transform.rotation = Quaternion.identity;
                 spawned.Add(meteor.gameObject);
             }
+            
         }
     }
 

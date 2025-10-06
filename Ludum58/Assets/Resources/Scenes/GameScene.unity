@@ -17355,8 +17355,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.16799772, y: -0.0412794, z: -0.007041184, w: 0.98489755}
-  m_LocalPosition: {x: -0.6, y: 2.37, z: 49.46}
+  m_LocalRotation: {x: -0.016031878, y: -0.9719222, z: 0.23443942, w: -0.012184157}
+  m_LocalPosition: {x: 16.34, y: 51.63, z: 170.91}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -22700,6 +22700,7 @@ MonoBehaviour:
   playerController: {fileID: 2044848558}
   star: {fileID: 6639621545787299749, guid: 5df29b8e0f66bf94f845c937ba9702e8, type: 3}
   meteor: {fileID: -600159832302677457, guid: 477643902e179cd43ac79d495aaa9593, type: 3}
+  trashDamage: {fileID: 0}
   singleTunnelSpawner: {fileID: 615650099}
   score: {fileID: 2044848566}
   playerStats: {fileID: 2044848565}
@@ -38020,7 +38021,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: outerRadius
-      value: 100
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: meteorChance

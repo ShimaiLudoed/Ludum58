@@ -13,6 +13,7 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private PlayerController playerController;
     [SerializeField] private Star star;
     [SerializeField] private Meteor meteor;
+    [SerializeField] private TrashDamage trashDamage;
     [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
     [SerializeField] private Score score; 
     [SerializeField] private PlayerStats playerStats;
@@ -26,6 +27,7 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<PlayerStats>().FromInstance(playerStats).AsSingle().NonLazy();
         Container.BindFactory<LayerData,PlayerStats, Meteor, Meteor.MeteorFactory>().FromComponentInNewPrefab(meteor);
         Container.BindFactory<LayerData,PlayerController,Star,Star.StarFactory>().FromComponentInNewPrefab(star);
+        Container.BindFactory<LayerData,PlayerStats,TrashDamage,TrashDamage.TrashFactory>().FromComponentInNewPrefab(trashDamage);
         
         Container.Bind<SingleTunnelSpawner>().FromInstance(singleTunnelSpawner).AsSingle();
         Container.Bind<ParticleData>().FromInstance(particleData).AsSingle().NonLazy();
