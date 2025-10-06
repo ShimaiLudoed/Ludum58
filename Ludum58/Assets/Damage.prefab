@@ -105,7 +105,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3dd1b1a62d94b8b468113658138f1cc3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Meteor
-  damage: 20
+  damage: 1
+  rotationSpeed: 50
+  rotationAxis: {x: 0, y: 1, z: 0}
   meteorMeshes:
   - {fileID: 4975500546403665748, guid: 8c12e5695e04a644dae5f801657f8f81, type: 3}
   - {fileID: -6153995196899191083, guid: 3b3abbbc68a34d048999f6a879b353fc, type: 3}

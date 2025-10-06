@@ -126,9 +126,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd0ba1987389c904fbb661047363a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrashDamage
-  damage: 20
+  damage: 1
   TrashMeshes:
   - {fileID: -1344343958384416060, guid: a817babfbaa676e43ba83b3a2cb9343f, type: 3}
   - {fileID: 4338319842313244140, guid: 7b05aff6f8d048441a5f62c5538ac303, type: 3}
   - {fileID: 8741580323632545238, guid: 4999b0b9552e3cf4da492c40190c90a8, type: 3}
   - {fileID: -2328389530087786908, guid: 0352ea9cc96679a42a588921d6c066f6, type: 3}
+  rotationAxis: {x: 0, y: 1, z: 0}
+  rotationSpeed: 50

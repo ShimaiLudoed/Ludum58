@@ -16566,6 +16566,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!212 &232302845 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2782442621447901944, guid: d934e19037261904597e1b08756d55fd, type: 3}
+  m_PrefabInstance: {fileID: 3085616506630738279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &233640530 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5010553734416162686, guid: d934e19037261904597e1b08756d55fd, type: 3}
@@ -18112,6 +18117,11 @@ MonoBehaviour:
   disableParentLayouts: 1
   ignoreLayoutOnLetters: 1
   deactivateOnComplete: 1
+--- !u!212 &468279901 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 4904851614874372560, guid: d934e19037261904597e1b08756d55fd, type: 3}
+  m_PrefabInstance: {fileID: 3085616506630738279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &480280299
 GameObject:
   m_ObjectHideFlags: 0
@@ -37471,6 +37481,11 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     vectorLabel1_3: W
+--- !u!212 &691243222 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 185389347053212952, guid: d934e19037261904597e1b08756d55fd, type: 3}
+  m_PrefabInstance: {fileID: 3085616506630738279}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &745674750
 GameObject:
   m_ObjectHideFlags: 0
@@ -38328,7 +38343,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5352952633034458160, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: moveSpeed
@@ -55925,8 +55940,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39b6d5d3e7836c84cbdcc9bbf8fdaacc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  HP: 100
-  hpText: {fileID: 1276851588}
+  maxHP: 3
+  currentHP: 0
+  heartSprites:
+  - {fileID: 468279901}
+  - {fileID: 691243222}
+  - {fileID: 232302845}
 --- !u!114 &2044848566
 MonoBehaviour:
   m_ObjectHideFlags: 0
