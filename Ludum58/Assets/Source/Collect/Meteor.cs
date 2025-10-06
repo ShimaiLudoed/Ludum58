@@ -10,10 +10,12 @@ public class Meteor : MonoBehaviour
     private PlayerStats _playerStats;
     [SerializeField] private Mesh[] meteorMeshes;
     private MeshFilter meshFilter;
+
     [Inject]
     public void Construct(LayerData layerData, PlayerStats playerStats)
     {
         _layerData = layerData;
+        _playerStats = playerStats;
     }
 
     private void Start()

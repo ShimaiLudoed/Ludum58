@@ -83,11 +83,9 @@ public class SingleTunnelSpawner : MonoBehaviour
         {
             float randomValue = Random.value;
             
-            // Определяем что спавнить
             bool spawnStar = randomValue < starChance;
             bool spawnMeteor = randomValue >= starChance && randomValue < starChance + meteorChance;
             
-            // Если ничего не выпало - пропускаем
             if (!spawnStar && !spawnMeteor) continue;
 
             float angle = Random.Range(0f, Mathf.PI * 2);
