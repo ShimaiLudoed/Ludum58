@@ -20,7 +20,7 @@ public class Star : MonoBehaviour
     private bool isCollecting = false;
 
     [Inject]
-    public void Construct(LayerData layerData, PlayerController playerController, Sound sound, Score score)
+    public void Construct(LayerData layerData, PlayerController playerController, ISound sound, Score score)
     {
         _layerData = layerData;
         _playerController = playerController;

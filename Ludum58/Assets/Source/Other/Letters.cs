@@ -34,18 +34,6 @@ public class LettersFlyAway : MonoBehaviour
     public bool deactivateOnComplete = true;   // буквы исчезают и не возвращаются
 
     System.Random rng;
-    private ISound _sound;
-
-    [Inject]
-    public void Construct(ISound sound)
-    {
-        _sound = sound;
-    }
-
-    public void PlaySound()
-    {
-        _sound.PlayButtonClick();
-    }
     
     public void Play()
     {

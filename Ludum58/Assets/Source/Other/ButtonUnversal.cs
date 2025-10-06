@@ -32,7 +32,7 @@ public class CutsceneOnClick : MonoBehaviour
     private ISound _sound;
 
     [Inject]
-    public void Construct(Sound sound)
+    public void Construct(ISound sound)
     {
         _sound = sound;
     }

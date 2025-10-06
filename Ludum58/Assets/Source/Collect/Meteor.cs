@@ -16,7 +16,7 @@ public class Meteor : MonoBehaviour
   private ISound _sound;
 
   [Inject]
-  public void Construct(LayerData layerData, PlayerStats playerStats, Sound sound)
+  public void Construct(LayerData layerData, PlayerStats playerStats, ISound sound)
   {
     _layerData = layerData;
     _playerStats = playerStats;
