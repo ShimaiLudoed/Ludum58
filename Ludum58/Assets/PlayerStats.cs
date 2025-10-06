@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
-using Unity.Cinemachine; // CM 3.x
+using Unity.Cinemachine;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -9,18 +9,22 @@ public class PlayerStats : MonoBehaviour
     public int maxHP = 3;
     public int currentHP;
 
+    [Header("Неуязвимость")]
+    [SerializeField] private float invulnerabilityTime ;
+    private bool isInvulnerable = false;
+
     [Header("Спрайты жизней")]
     public SpriteRenderer[] heartSprites;
 
-    [Header("Cinemachine Shake (CM 3.x)")]
-    [SerializeField] CinemachineBrain cinemachineBrain;      // можно оставить пустым — найдётся сам
-    [SerializeField, Min(0f)] float shakeDuration = 0.5f;    // 0.5 c
+    [Header("Cinemachine Shake")]
+    [SerializeField] CinemachineBrain cinemachineBrain;     
+    [SerializeField, Min(0f)] float shakeDuration = 0.5f;    
     [SerializeField, Min(0f)] float shakeAmplitude = 2.0f;
     [SerializeField, Min(0f)] float shakeFrequency = 2.0f;
 
     [Header("Флэш сердец при уроне")]
     [SerializeField] Color heartsFlashColor = new Color(1f, 0.2f, 0.2f, 1f);
-    [SerializeField, Min(0f)] float heartsFlashDuration = 0.5f; // 0.5 c
+    [SerializeField, Min(0f)] float heartsFlashDuration = 0.5f;
 
     Coroutine flashCo;
 
@@ -33,6 +37,9 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        // Проверяем неуязвимость
+        if (isInvulnerable) return;
+
         int previousHP = currentHP;
         currentHP -= amount;
 
@@ -41,12 +48,20 @@ public class PlayerStats : MonoBehaviour
             currentHP = 0;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
-
-        // Тряска камеры на 0.5 c
+        
+        // Эффекты при получении урона
         StartCoroutine(CinemachineShake(shakeDuration, shakeAmplitude, shakeFrequency));
-
-        // Плавное скрытие потерянных сердец + флэш оставшихся на 0.5 c
         StartCoroutine(AnimateHeartLoss(previousHP));
+        
+        // Включаем неуязвимость
+        StartCoroutine(InvulnerabilityRoutine());
+    }
+
+    IEnumerator InvulnerabilityRoutine()
+    {
+        isInvulnerable = true;
+        yield return new WaitForSeconds(invulnerabilityTime);
+        isInvulnerable = false;
     }
 
     IEnumerator AnimateHeartLoss(int previousHP)
@@ -55,7 +70,6 @@ public class PlayerStats : MonoBehaviour
         {
             if (heartSprites[i] != null)
             {
-                // флэш оставшихся (0..currentHP-1) на 0.5 c
                 if (flashCo != null) StopCoroutine(flashCo);
                 flashCo = StartCoroutine(FlashRemainingHearts(heartsFlashDuration));
 
@@ -97,11 +111,9 @@ public class PlayerStats : MonoBehaviour
         }
     }
 
-    // ---------------- Cinemachine 3.x shake (Perlin на активной CM-камере) ----------------
-
     IEnumerator CinemachineShake(float dur, float amp, float freq)
     {
-        var perlin = GetActivePerlin();            // возьмём/добавим Perlin на лайв-камеру
+        var perlin = GetActivePerlin();         
         if (perlin == null) yield break;
 
         float origAmp = perlin.AmplitudeGain;
@@ -113,7 +125,7 @@ public class PlayerStats : MonoBehaviour
         float t = 0f;
         while (t < dur)
         {
-            t += Time.unscaledDeltaTime;           // независим от timeScale
+            t += Time.unscaledDeltaTime;   
             yield return null;
         }
 
@@ -123,18 +135,14 @@ public class PlayerStats : MonoBehaviour
 
     CinemachineBasicMultiChannelPerlin GetActivePerlin()
     {
-        // 1) получить активную ICinemachineCamera из Brain
         if (!cinemachineBrain) cinemachineBrain = FindObjectOfType<CinemachineBrain>();
         if (!cinemachineBrain) return null;
 
         ICinemachineCamera icam = cinemachineBrain.ActiveVirtualCamera;
-        // В бленде ActiveVirtualCamera может быть «не компонент». Тогда запасной путь.
-
-        // 2) если активная — Component, берём её GO
+        
         var comp = icam as Component;
         GameObject vcamGO = comp ? comp.gameObject : null;
-
-        // 3) запасной путь: найти лайв-камеру вручную (наиболее приоритетную включённую)
+        
         if (!vcamGO)
         {
             CinemachineCamera best = null;
@@ -152,15 +160,12 @@ public class PlayerStats : MonoBehaviour
         }
 
         if (!vcamGO) return null;
-
-        // 4) взять/добавить Perlin на эту CM-камеру
+        
         var perlin = vcamGO.GetComponent<CinemachineBasicMultiChannelPerlin>();
         if (!perlin) perlin = vcamGO.AddComponent<CinemachineBasicMultiChannelPerlin>();
         return perlin;
     }
-
-    // ---------------- Красный флэш оставшихся сердец ----------------
-
+    
     IEnumerator FlashRemainingHearts(float dur)
     {
         if (dur <= 0f || heartSprites == null) yield break;
