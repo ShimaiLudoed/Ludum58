@@ -142,17 +142,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TripleTunnelSpawner
   player: {fileID: 0}
   tunnelCenter: {fileID: 3890703117470781599}
-  innerRadius: 127.4
+  innerRadius: 126.8
   midRadius: 318.2
-  outerRadius: 695.2
-  tunnelLength: 30.2
+  outerRadius: 694.4
+  tunnelLength: 30
   midTunnelPrefabs:
   - {fileID: 1350434808466061327, guid: 09590bfba6190934d9633de99c4e3950, type: 3}
   - {fileID: 1730166721938204066, guid: 93871192c4ffe014d82f19cb13749905, type: 3}
   - {fileID: 4632144992721125615, guid: c23f2b33436026140b105ffecfdc4cd9, type: 3}
   - {fileID: 5204413523909470302, guid: 9675ad467e1b3eb44861c7271e416f06, type: 3}
-  - {fileID: 626896983801046768, guid: f03272df61d686e4fb3d4d0683acb3f3, type: 3}
-  midObjectsPerBatch: 1
+  - {fileID: 919132149155446097, guid: caf521d554bd3624590ea0eeabc4f3e9, type: 3}
+  - {fileID: 919132149155446097, guid: 8c12e5695e04a644dae5f801657f8f81, type: 3}
+  - {fileID: 919132149155446097, guid: 3b3abbbc68a34d048999f6a879b353fc, type: 3}
+  - {fileID: 919132149155446097, guid: c766842759fd86046ab13af34af4842e, type: 3}
+  - {fileID: 919132149155446097, guid: 5881e2cfd770bd84187600bfc045cd53, type: 3}
+  - {fileID: 919132149155446097, guid: 7565c3b6e2ffa2941a615b23dfd3a65d, type: 3}
+  - {fileID: 919132149155446097, guid: a6764acaefc18484096364e968edabfb, type: 3}
+  - {fileID: 919132149155446097, guid: 08b6645f2848d6e4599c95db0e736542, type: 3}
+  midObjectsPerBatch: 3
   midSpawnSpeed: 4
   midMoveSpeed: 60
   midDespawnZ: -30
@@ -222,12 +229,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   tunnelCenter: {fileID: 4941683583394658984}
   innerRadius: 22
-  outerRadius: 105.8
+  outerRadius: 104.3
   tunnelLength: 20
-  objectsPerBatch: 10
+  starMinRadius: 3
+  starMaxRadius: 5
+  dangerMinRadius: 3
+  dangerMaxRadius: 8
+  objectsPerBatch: 5
   spawnSpeed: 1
-  moveSpeed: 20
+  moveSpeed: 30
   despawnZ: -30
-  starChance: 0.3
+  starChance: 0.2
   meteorChance: 0.5
+  spaceJunkChance: 0.2
   tunnelColor: {r: 0, g: 1, b: 1, a: 1}
+  starZoneColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  dangerZoneColor: {r: 1, g: 0, b: 0, a: 1}

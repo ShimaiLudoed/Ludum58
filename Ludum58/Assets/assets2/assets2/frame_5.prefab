@@ -67,5 +67,29 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 7b05aff6f8d048441a5f62c5538ac303, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -4788315761921150703}
   m_SourcePrefab: {fileID: 100100000, guid: 7b05aff6f8d048441a5f62c5538ac303, type: 3}
+--- !u!1 &4632144992721125615 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 7b05aff6f8d048441a5f62c5538ac303, type: 3}
+  m_PrefabInstance: {fileID: 5515157496499699134}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-4788315761921150703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4632144992721125615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dd1b1a62d94b8b468113658138f1cc3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Meteor
+  damage: 0
+  rotationSpeed: 50
+  rotationAxis: {x: 0, y: 1, z: 0}
+  meteorMeshes: []

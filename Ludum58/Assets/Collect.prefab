@@ -68,9 +68,9 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6087771358165109452, guid: c69ccd9bd97d3d741a25540e22b7e2b1, type: 3}
-  - {fileID: 6699446615349125189, guid: c69ccd9bd97d3d741a25540e22b7e2b1, type: 3}
-  - {fileID: -5605289326131794027, guid: c69ccd9bd97d3d741a25540e22b7e2b1, type: 3}
+  - {fileID: 2100000, guid: 677595a91f4034f41b2344b1f6340c9a, type: 2}
+  - {fileID: 2100000, guid: 677595a91f4034f41b2344b1f6340c9a, type: 2}
+  - {fileID: 2100000, guid: 677595a91f4034f41b2344b1f6340c9a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -126,4 +126,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 781b5aefd8a41d440b18896d4ab53854, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Star
-  meteorMeshes: []

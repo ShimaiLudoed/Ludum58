@@ -8,6 +8,8 @@ public class TrashDamage : MonoBehaviour
     private PlayerStats _playerStats;
     [SerializeField] private Mesh[] TrashMeshes;
     private MeshFilter meshFilter;
+    [SerializeField] private Vector3 rotationAxis = Vector3.up;
+    [SerializeField] private float rotationSpeed = 50f;
 
     [Inject]
     public void Construct(LayerData layerData, PlayerStats playerStats)
@@ -20,7 +22,25 @@ public class TrashDamage : MonoBehaviour
     {
         meshFilter = GetComponent<MeshFilter>();
         SetupRandomAppearance();
+        SetupRandomRotation();
     }
+      void SetupRandomRotation()
+  {
+    rotationSpeed = Random.Range(30f, 80f);
+        
+    rotationAxis = new Vector3(
+      Random.Range(-1f, 1f),
+      Random.Range(-1f, 1f), 
+      Random.Range(-1f, 1f)
+    ).normalized;
+    
+    transform.rotation = Random.rotation;
+  }
+
+  private void Update()
+  {
+    transform.Rotate(rotationAxis * rotationSpeed * Time.deltaTime);
+  }
 
     void SetupRandomAppearance()
     {
