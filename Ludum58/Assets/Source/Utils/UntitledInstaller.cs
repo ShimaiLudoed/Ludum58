@@ -19,7 +19,7 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private PlayerStats playerStats;
     public override void InstallBindings()
     {
-        //Container.Bind<ISound>().To<Sound>().AsSingle().NonLazy();
+        Container.Bind<ISound>().To<Sound>().AsSingle().NonLazy();
         Container.Bind<Score>().FromInstance(score).AsSingle();
         Container.Bind<PlayerController>().FromInstance(playerController).AsSingle();
         Container.Bind<Star>().FromInstance(star).AsTransient();

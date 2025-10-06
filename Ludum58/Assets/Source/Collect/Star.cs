@@ -20,11 +20,12 @@ public class Star : MonoBehaviour
     private bool isCollecting = false;
 
     [Inject]
-    public void Construct(LayerData layerData, PlayerController playerController, Score score)
+    public void Construct(LayerData layerData, PlayerController playerController, Sound sound, Score score)
     {
         _layerData = layerData;
         _playerController = playerController;
         _score = score;
+        _sound = sound;
     }
 
     private void Start()
@@ -47,6 +48,7 @@ public class Star : MonoBehaviour
         
         isCollecting = true;
         StartCoroutine(CollectAnimation());
+        _sound.PlayTakeStar();
     }
 
     private IEnumerator CollectAnimation()

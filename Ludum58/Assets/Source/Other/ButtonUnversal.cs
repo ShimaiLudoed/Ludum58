@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.UI;
 using System.Collections;
+using Zenject;
 using static LeanTween;
 
 public class CutsceneOnClick : MonoBehaviour
@@ -28,10 +29,21 @@ public class CutsceneOnClick : MonoBehaviour
     [Header("Игрок")]
     public GameObject playerRoot;
 
-    // повесь в Button.onClick
+    private ISound _sound;
+
+    [Inject]
+    public void Construct(Sound sound)
+    {
+        _sound = sound;
+    }
+    
+    public void PlaySound()
+    {
+        _sound.PlayButtonClick();
+    }
+    
     public void OnClick()
     {
-        // проигрываем клик-клип на кнопке (необязательно ждать)
         if (startButtonAnimator)
             startButtonAnimator.CrossFadeInFixedTime(clickStateName, 0f, clickLayer, 0f);
 

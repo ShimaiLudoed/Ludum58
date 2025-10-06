@@ -13,12 +13,14 @@ public class Meteor : MonoBehaviour
   private PlayerStats _playerStats;
   [SerializeField] private Mesh[] meteorMeshes;
   private MeshFilter meshFilter;
+  private ISound _sound;
 
   [Inject]
-  public void Construct(LayerData layerData, PlayerStats playerStats)
+  public void Construct(LayerData layerData, PlayerStats playerStats, Sound sound)
   {
     _layerData = layerData;
     _playerStats = playerStats;
+    _sound = sound;
   }
 
   private void Start()
@@ -59,6 +61,7 @@ public class Meteor : MonoBehaviour
     if(LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
     {
       _playerStats.TakeDamage(damage);
+      _sound.PlayTakeDamage();
       Destroy(gameObject);
     }
   }

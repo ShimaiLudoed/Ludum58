@@ -2,15 +2,9 @@ using UnityEngine;
 
 public class AudioData : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+  [field: SerializeField] public AudioSource AudioSource;
+  [field: SerializeField] public AudioClip ButtonClick;
+  [field: SerializeField] public AudioClip TakeStar;
+  [field: SerializeField] public AudioClip TakeDamage;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
