@@ -15,6 +15,7 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private Meteor meteor;
     [SerializeField] private TrashDamage trashDamage;
     [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
+    [SerializeField] private CutsceneOnClick cutsceneOnClick;
     [SerializeField] private Score score; 
     [SerializeField] private PlayerStats playerStats;
     public override void InstallBindings()
@@ -24,6 +25,7 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<PlayerController>().FromInstance(playerController).AsSingle();
         Container.Bind<Star>().FromInstance(star).AsTransient();
         Container.Bind<Meteor>().FromInstance(meteor).AsTransient();
+        Container.Bind<CutsceneOnClick>().FromInstance(cutsceneOnClick).AsSingle().NonLazy();
         Container.Bind<PlayerStats>().FromInstance(playerStats).AsSingle().NonLazy();
         Container.BindFactory<LayerData,PlayerStats, Meteor, Meteor.MeteorFactory>().FromComponentInNewPrefab(meteor);
         Container.BindFactory<LayerData,PlayerController,Star,Star.StarFactory>().FromComponentInNewPrefab(star);
