@@ -16,14 +16,12 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private TrashDamage trashDamage;
     [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
     [SerializeField] private CutsceneOnClick cutsceneOnClick;
-    [SerializeField] private MaxScore maxScore;
     [SerializeField] private Score score; 
     [SerializeField] private PlayerStats playerStats;
     public override void InstallBindings()
     {
         Container.Bind<ISound>().To<Sound>().AsSingle().NonLazy();
         Container.Bind<Score>().FromInstance(score).AsSingle();
-        Container.Bind<MaxScore>().FromInstance(maxScore).AsSingle();
         Container.Bind<PlayerController>().FromInstance(playerController).AsSingle();
         Container.Bind<Star>().FromInstance(star).AsTransient();
         Container.Bind<Meteor>().FromInstance(meteor).AsTransient();
