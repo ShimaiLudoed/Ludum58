@@ -13,23 +13,39 @@ public class ForwardCameraController : MonoBehaviour
     public float bounceStrength = 5f;       // сила отталкивания
     public float bounceDamping = 2f;        // демпфирование
 
+    [Header("Активация рамок")]
+    public float boundaryActivationDelay = 2f; // задержка в секундах
+    private float timer = 0f;
+    private bool boundariesActive = false;
+
     private Rigidbody playerRb;
 
     void Start()
     {
         if (player != null)
             playerRb = player.GetComponent<Rigidbody>();
+        
+        timer = boundaryActivationDelay;
+        boundariesActive = false;
     }
 
     void Update()
     {
         // камера движется равномерно вперёд
         transform.position += cameraDirection.normalized * cameraSpeed * Time.deltaTime;
+
+        // отсчёт до активации рамок
+        if (!boundariesActive)
+        {
+            timer -= Time.deltaTime;
+            if (timer <= 0f)
+                boundariesActive = true;
+        }
     }
 
     void FixedUpdate()
     {
-        if (player == null || playerRb == null) return;
+        if (!boundariesActive || player == null || playerRb == null) return;
 
         // позиция игрока относительно камеры
         Vector3 local = transform.InverseTransformPoint(player.position);
