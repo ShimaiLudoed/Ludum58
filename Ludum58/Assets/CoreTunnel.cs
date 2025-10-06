@@ -22,6 +22,9 @@ public class SingleTunnelSpawner : MonoBehaviour
     [SerializeField] private float moveSpeed = 20f;
     [SerializeField] private float despawnZ = -30f;
 
+    [Header("Ускорение игры")]
+    [SerializeField] private float accelerationRate = 0.1f;
+
     [Header("Вероятности спавна")]
     [Range(0f, 1f)]
     [SerializeField] private float starChance = 0.3f;
@@ -38,6 +41,7 @@ public class SingleTunnelSpawner : MonoBehaviour
     private List<GameObject> spawned = new List<GameObject>();
     private float spawnTimer;
     private float zSpawnOffset;
+    private float currentMoveSpeed;
 
     // Zenject зависимости
     private PlayerController _playerController;
@@ -67,16 +71,14 @@ public class SingleTunnelSpawner : MonoBehaviour
     void Start()
     {
         spawnTimer = 1f / Mathf.Max(spawnSpeed, 0.01f);
-        
-        if (_playerController == null)
-        {
-            Debug.LogError("PlayerController not injected!");
-        }
+        currentMoveSpeed = moveSpeed;
     }
 
     void Update()
     {
         if (_playerController == null) return;
+        
+        currentMoveSpeed += accelerationRate * Time.deltaTime;
         
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0f)
@@ -87,7 +89,7 @@ public class SingleTunnelSpawner : MonoBehaviour
 
         MoveObjects();
         CleanupObjects();
-        zSpawnOffset += moveSpeed * Time.deltaTime;
+        zSpawnOffset += currentMoveSpeed * Time.deltaTime;
     }
 
     void SpawnBatch()
@@ -114,7 +116,6 @@ public class SingleTunnelSpawner : MonoBehaviour
 
             if (spawnStar)
             {
-                // Звезды появляются в своем круге
                 float radius = Random.Range(starMinRadius, starMaxRadius);
                 localPos = new Vector3(
                     Mathf.Cos(angle) * radius,
@@ -130,7 +131,6 @@ public class SingleTunnelSpawner : MonoBehaviour
             }
             else 
             {
-                // Метеориты и мусор появляются в своем круге
                 float radius = Random.Range(dangerMinRadius, dangerMaxRadius);
                 localPos = new Vector3(
                     Mathf.Cos(angle) * radius,
@@ -162,7 +162,7 @@ public class SingleTunnelSpawner : MonoBehaviour
         foreach (var obj in spawned)
         {
             if (obj != null)
-                obj.transform.Translate(Vector3.back * moveSpeed * Time.deltaTime, Space.World);
+                obj.transform.Translate(Vector3.back * currentMoveSpeed * Time.deltaTime, Space.World);
         }
     }
 

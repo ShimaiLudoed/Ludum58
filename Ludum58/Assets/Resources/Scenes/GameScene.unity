@@ -17796,8 +17796,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.16799772, y: -0.0412794, z: -0.007041184, w: 0.98489755}
-  m_LocalPosition: {x: -0.6, y: 2.37, z: 49.46}
+  m_LocalRotation: {x: -0.03838021, y: 0.94855994, z: -0.12656304, w: -0.28765056}
+  m_LocalPosition: {x: 97, y: 50.52, z: 176.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23173,6 +23173,7 @@ MonoBehaviour:
   trashDamage: {fileID: 6203028573821453928, guid: 2590715579090bf4b9387660beff3bb5, type: 3}
   singleTunnelSpawner: {fileID: 615650099}
   cutsceneOnClick: {fileID: 429133594}
+  maxScore: {fileID: 2103502791}
   score: {fileID: 2044848566}
   playerStats: {fileID: 2044848565}
 --- !u!114 &531723589
@@ -45231,6 +45232,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TextData
   scoreText: {fileID: 1411469961}
+  maxScoreText: {fileID: 0}
 --- !u!114 &1548089553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -56708,6 +56710,7 @@ GameObject:
   - component: {fileID: 2103502789}
   - component: {fileID: 2103502788}
   - component: {fileID: 2103502787}
+  - component: {fileID: 2103502791}
   m_Layer: 5
   m_Name: Menu
   m_TagString: Untagged
@@ -56804,6 +56807,18 @@ RectTransform:
   m_AnchoredPosition: {x: -8.494616, y: 35.52024}
   m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2103502791
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2103502786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2a7f92a7b5274b47a7469c598feca1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MaxScore
 --- !u!1 &2132695678
 GameObject:
   m_ObjectHideFlags: 0
