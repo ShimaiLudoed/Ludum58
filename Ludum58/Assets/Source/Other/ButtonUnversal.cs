@@ -41,7 +41,10 @@ public class CutsceneOnClick : MonoBehaviour
     {
         _sound.PlayButtonClick();
     }
-    
+    public void deathmom()
+    {
+        _sound.deathmom2();
+    }
     public void OnClick()
     {
         if (startButtonAnimator)

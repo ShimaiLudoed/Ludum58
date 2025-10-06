@@ -6,5 +6,5 @@ public class AudioData : MonoBehaviour
   [field: SerializeField] public AudioClip ButtonClick;
   [field: SerializeField] public AudioClip TakeStar;
   [field: SerializeField] public AudioClip TakeDamage;
-
+  [field: SerializeField] public AudioClip deathmom4;
 }

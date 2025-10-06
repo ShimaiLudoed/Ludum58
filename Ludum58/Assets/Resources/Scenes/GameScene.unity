@@ -5155,6 +5155,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 429133594}
+        m_TargetAssemblyTypeName: CutsceneOnClick, Assembly-CSharp
+        m_MethodName: deathmom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!114 &35949775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17784,8 +17796,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.016031878, y: -0.9719222, z: 0.23443942, w: -0.012184157}
-  m_LocalPosition: {x: 16.34, y: 51.63, z: 170.91}
+  m_LocalRotation: {x: -0.16799772, y: -0.0412794, z: -0.007041184, w: 0.98489755}
+  m_LocalPosition: {x: -0.6, y: 2.37, z: 49.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -23160,6 +23172,7 @@ MonoBehaviour:
   meteor: {fileID: -600159832302677457, guid: 477643902e179cd43ac79d495aaa9593, type: 3}
   trashDamage: {fileID: 6203028573821453928, guid: 2590715579090bf4b9387660beff3bb5, type: 3}
   singleTunnelSpawner: {fileID: 615650099}
+  cutsceneOnClick: {fileID: 429133594}
   score: {fileID: 2044848566}
   playerStats: {fileID: 2044848565}
 --- !u!114 &531723589
@@ -43874,8 +43887,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1578260001}
   - {fileID: 855853223}
+  - {fileID: 1578260001}
   - {fileID: 156678894}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -44089,6 +44102,30 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: dissappear
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 429133594}
+        m_TargetAssemblyTypeName: CutsceneOnClick, Assembly-CSharp
+        m_MethodName: PlaySound
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 429133594}
+        m_TargetAssemblyTypeName: CutsceneOnClick, Assembly-CSharp
+        m_MethodName: deathmom
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1270818485
@@ -45265,9 +45302,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AudioData
   AudioSource: {fileID: 156678895}
-  ButtonClick: {fileID: 0}
-  TakeStar: {fileID: 0}
-  TakeDamage: {fileID: 0}
+  ButtonClick: {fileID: 8300000, guid: 8008134f71b382f42bce978a33f6ca11, type: 3}
+  TakeStar: {fileID: 8300000, guid: c5ecaa1e90960a349b5522d3505f4373, type: 3}
+  TakeDamage: {fileID: 8300000, guid: 6fd564f1ab86c834e976b2df053fb697, type: 3}
+  deathmom4: {fileID: 8300000, guid: 74430be4eebca7440b6b73dde801aab9, type: 3}
 --- !u!4 &1548089558
 Transform:
   m_ObjectHideFlags: 0
@@ -45437,7 +45475,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1578260001
 Transform:
   m_ObjectHideFlags: 0
@@ -45464,9 +45502,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Resource: {fileID: 8300000, guid: d21294b8292ef3d4380d2801edc462a4, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.192
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -50681,6 +50719,8 @@ PlayableDirector:
     value: {fileID: 1637272132}
   - key: {fileID: -2551829844261005049, guid: fd616d877d2140a41a6d2dc31a203947, type: 2}
     value: {fileID: 129949074}
+  - key: {fileID: -4279826839668764711, guid: fd616d877d2140a41a6d2dc31a203947, type: 2}
+    value: {fileID: 1578260000}
   m_ExposedReferences:
     m_References:
     - 4d0aa7c99d2194e40823495b67c0fc4d: {fileID: 1840007782}
@@ -56421,7 +56461,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
   maxHP: 3
   currentHP: 0
-  invulnerabilityTime: 1
+  invulnerabilityTime: 2
   heartSprites:
   - {fileID: 468279901}
   - {fileID: 691243222}
@@ -57061,16 +57101,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameUI
       objectReference: {fileID: 0}
+    - target: {fileID: 5010553734416162686, guid: d934e19037261904597e1b08756d55fd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 729657278906720182, guid: d934e19037261904597e1b08756d55fd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
-    - targetCorrespondingSourceObject: {fileID: 3974594908750130175, guid: d934e19037261904597e1b08756d55fd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 0}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d934e19037261904597e1b08756d55fd, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

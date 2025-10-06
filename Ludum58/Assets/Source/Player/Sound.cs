@@ -7,6 +7,7 @@ public class Sound : ISound
   private readonly AudioClip _buttonClick;
   private readonly AudioClip _takeStar;
   private readonly AudioClip _takeDamage;
+ private readonly AudioClip deathmom3;
 
   [Inject]
   public Sound(AudioData audioData)
@@ -15,6 +16,7 @@ public class Sound : ISound
     _buttonClick = audioData.ButtonClick;
     _takeStar = audioData.TakeStar;
     _takeDamage = audioData.TakeDamage;
+    deathmom3 = audioData.deathmom4;
   }
 
   public void PlayButtonClick()
@@ -28,5 +30,9 @@ public class Sound : ISound
   public void PlayTakeDamage()
   {
     _source.PlayOneShot(_takeDamage);
+  }
+  public void deathmom2()
+  {
+    _source.PlayOneShot(deathmom3);
   }
 }
