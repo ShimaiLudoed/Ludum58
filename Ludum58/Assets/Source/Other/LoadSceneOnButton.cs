@@ -27,7 +27,6 @@ public class FadeByImageLoader : MonoBehaviour
     {
         if (fadePanel == null || fadeImage == null)
         {
-            Debug.LogError("fadePanel или fadeImage не назначены");
             SceneManager.LoadScene(sceneName);
             yield break;
         }

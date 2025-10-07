@@ -32,7 +32,6 @@ public class UIFixProxyClick : MonoBehaviour
                 var go = _results[0].gameObject;
                 // Пробуем вызвать событие клика вручную
                 ExecuteEvents.Execute(go, _pointer, ExecuteEvents.pointerClickHandler);
-                Debug.Log("UIFixProxyClick: clicked " + go.name);
             }
         }
     }

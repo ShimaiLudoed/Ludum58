@@ -73,7 +73,6 @@ public class Star : MonoBehaviour
 
     private void CompleteCollection()
     {
-        Debug.Log("Звезда собрана!");
         _score?.AddScore();
         Destroy(gameObject);
     }
