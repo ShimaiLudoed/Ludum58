@@ -10,6 +10,7 @@ public class TrashDamage : MonoBehaviour
     private MeshFilter meshFilter;
     [SerializeField] private Vector3 rotationAxis = Vector3.up;
     [SerializeField] private float rotationSpeed = 50f;
+    [SerializeField] private ParticleSystem damageParticle;
 
     [Inject]
     public void Construct(LayerData layerData, PlayerStats playerStats)
@@ -55,7 +56,10 @@ public class TrashDamage : MonoBehaviour
         if(LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
         {
             _playerStats.TakeDamage(damage);
-            Destroy(gameObject);
+            damageParticle.Play();
+            GetComponent<MeshRenderer>().enabled = false;
+            GetComponent<Collider>().enabled = false;
+            Destroy(gameObject, damageParticle.main.duration);
         }
     }
 

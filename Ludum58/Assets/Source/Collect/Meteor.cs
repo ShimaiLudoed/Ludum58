@@ -14,6 +14,7 @@ public class Meteor : MonoBehaviour
   [SerializeField] private Mesh[] meteorMeshes;
   private MeshFilter meshFilter;
   private ISound _sound;
+  [SerializeField] private ParticleSystem damageParticle;
 
   [Inject]
   public void Construct(LayerData layerData, PlayerStats playerStats, ISound sound)
@@ -60,9 +61,12 @@ public class Meteor : MonoBehaviour
   {
     if(LayerMaskCheck.ContainsLayer(_layerData.player, other.gameObject.layer))
     {
+      damageParticle.Play();
       _playerStats.TakeDamage(damage);
       _sound.PlayTakeDamage();
-      Destroy(gameObject);
+      GetComponent<MeshRenderer>().enabled = false;
+      GetComponent<Collider>().enabled = false;
+      Destroy(gameObject, damageParticle.main.duration);
     }
   }
 

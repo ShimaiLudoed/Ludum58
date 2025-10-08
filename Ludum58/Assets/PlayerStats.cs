@@ -2,33 +2,44 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using Unity.Cinemachine;
+using Zenject;
 
 public class PlayerStats : MonoBehaviour
 {
-    [Header("Игровые параметры")]
-    public int maxHP = 3;
+    private Score _score;
+    [SerializeField] private ParticleSystem particleSystem;
+    [SerializeField] private GameObject replayPanel;
+    [Header("Игровые параметры")] public int maxHP = 3;
     public int currentHP;
 
-    [Header("Неуязвимость")]
-    [SerializeField] private float invulnerabilityTime ;
+    [Header("Неуязвимость")] [SerializeField]
+    private float invulnerabilityTime;
+
     private bool isInvulnerable = false;
 
-    [Header("Спрайты жизней")]
-    public SpriteRenderer[] heartSprites;
+    [Header("Спрайты жизней")] public SpriteRenderer[] heartSprites;
 
-    [Header("Cinemachine Shake")]
-    [SerializeField] CinemachineBrain cinemachineBrain;     
-    [SerializeField, Min(0f)] float shakeDuration = 0.5f;    
+    [Header("Cinemachine Shake")] [SerializeField]
+    CinemachineBrain cinemachineBrain;
+
+    [SerializeField, Min(0f)] float shakeDuration = 0.5f;
     [SerializeField, Min(0f)] float shakeAmplitude = 2.0f;
     [SerializeField, Min(0f)] float shakeFrequency = 2.0f;
 
-    [Header("Флэш сердец при уроне")]
-    [SerializeField] Color heartsFlashColor = new Color(1f, 0.2f, 0.2f, 1f);
+    [Header("Флэш сердец при уроне")] [SerializeField]
+    Color heartsFlashColor = new Color(1f, 0.2f, 0.2f, 1f);
+
     [SerializeField, Min(0f)] float heartsFlashDuration = 0.5f;
 
     Coroutine flashCo;
 
-    void Start()
+    [Inject]
+    public void Construct(Score score)
+    {
+        _score = score;
+    }
+
+void Start()
     {
         currentHP = maxHP;
         UpdateHeartsUI();
@@ -37,23 +48,21 @@ public class PlayerStats : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-        // Проверяем неуязвимость
         if (isInvulnerable) return;
-
         int previousHP = currentHP;
         currentHP -= amount;
 
         if (currentHP <= 0)
         {
             currentHP = 0;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            particleSystem.Play();
+            replayPanel.gameObject.SetActive(true);
+            _score.FinishScore();
+            Destroy(gameObject);
         }
         
-        // Эффекты при получении урона
         StartCoroutine(CinemachineShake(shakeDuration, shakeAmplitude, shakeFrequency));
         StartCoroutine(AnimateHeartLoss(previousHP));
-        
-        // Включаем неуязвимость
         StartCoroutine(InvulnerabilityRoutine());
     }
 

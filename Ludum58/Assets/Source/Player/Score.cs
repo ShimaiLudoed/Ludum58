@@ -16,10 +16,13 @@ public class Score : MonoBehaviour
   public void AddScore()
   {
     _score++;
-    
     UpdateText();
   }
 
+  public void FinishScore()
+  {
+    _textData.maxScoreText.text = "Maximum Score : "+ _score.ToString();
+  }
   private void UpdateText()
   {
     _textData.scoreText.text = _score.ToString();
