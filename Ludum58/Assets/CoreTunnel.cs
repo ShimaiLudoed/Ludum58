@@ -26,19 +26,26 @@ public class SingleTunnelSpawner : MonoBehaviour
     [SerializeField] private float accelerationRate = 0.1f;
 
     [Header("Вероятности спавна")]
-    [Range(0f, 1f)]
-    [SerializeField] private float starChance = 0.3f;
-    [Range(0f, 1f)]
-    [SerializeField] private float meteorChance = 0.4f;
-    [Range(0f, 1f)]
-    [SerializeField] private float spaceJunkChance = 0.2f;
+    [Range(0f, 1f)] [SerializeField] private float starChance = 0.3f;
+    [Range(0f, 1f)] [SerializeField] private float meteorChance = 0.4f;
+    [Range(0f, 1f)] [SerializeField] private float spaceJunkChance = 0.2f;
+
+    [Header("Хилки")]
+    [SerializeField] private float healSpawnInterval = 30f;
+    [Range(0f, 1f)] [SerializeField] private float healChance = 1f;
+    private float _healTimer;
+
+    [Header("Щиты")]
+    [SerializeField] private float shieldSpawnInterval = 45f; // пример: раз в 45 секунд
+    [Range(0f, 1f)] [SerializeField] private float shieldChance = 0.7f;
+    private float _shieldTimer;
 
     [Header("Визуализация тоннеля")]
     [SerializeField] private Color tunnelColor = Color.cyan;
     [SerializeField] private Color starZoneColor = Color.yellow;
     [SerializeField] private Color dangerZoneColor = Color.red;
 
-    private List<GameObject> spawned = new List<GameObject>();
+    private readonly List<GameObject> spawned = new();
     private float spawnTimer;
     private float zSpawnOffset;
     private float currentMoveSpeed;
@@ -48,6 +55,8 @@ public class SingleTunnelSpawner : MonoBehaviour
     private Meteor.MeteorFactory _meteorFactory;
     private Star.StarFactory _starFactory;
     private TrashDamage.TrashFactory _spaceTrashFactory;
+    private HealOrb.HealOrbFactory _healFactory;
+    private ShieldOrb.ShieldOrbFactory _shieldFactory;
     private LayerData _layerData;
     private PlayerStats _playerStats;
 
@@ -58,7 +67,9 @@ public class SingleTunnelSpawner : MonoBehaviour
         LayerData layerData,
         Meteor.MeteorFactory meteorFactory,
         PlayerStats playerStats,
-        TrashDamage.TrashFactory trashFactory)
+        TrashDamage.TrashFactory trashFactory,
+        HealOrb.HealOrbFactory healFactory,
+        ShieldOrb.ShieldOrbFactory shieldFactory)
     {
         _playerController = playerController;
         _starFactory = starFactory;
@@ -66,25 +77,43 @@ public class SingleTunnelSpawner : MonoBehaviour
         _meteorFactory = meteorFactory;
         _playerStats = playerStats;
         _spaceTrashFactory = trashFactory;
+        _healFactory = healFactory;
+        _shieldFactory = shieldFactory;
     }
-    
+
     void Start()
     {
         spawnTimer = 1f / Mathf.Max(spawnSpeed, 0.01f);
         currentMoveSpeed = moveSpeed;
+        _healTimer = Mathf.Max(0.01f, healSpawnInterval);
+        _shieldTimer = Mathf.Max(0.01f, shieldSpawnInterval);
     }
 
     void Update()
     {
         if (_playerController == null) return;
-        
+
         currentMoveSpeed += accelerationRate * Time.deltaTime;
-        
+
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0f)
         {
             SpawnBatch();
             spawnTimer = 1f / Mathf.Max(spawnSpeed, 0.01f);
+        }
+
+        _healTimer -= Time.deltaTime;
+        if (_healTimer <= 0f)
+        {
+            TrySpawnHealOrb();
+            _healTimer = Mathf.Max(0.01f, healSpawnInterval);
+        }
+
+        _shieldTimer -= Time.deltaTime;
+        if (_shieldTimer <= 0f)
+        {
+            TrySpawnShieldOrb();
+            _shieldTimer = Mathf.Max(0.01f, shieldSpawnInterval);
         }
 
         MoveObjects();
@@ -96,17 +125,16 @@ public class SingleTunnelSpawner : MonoBehaviour
     {
         for (int i = 0; i < objectsPerBatch; i++)
         {
-            float randomValue = Random.value;
             float totalChance = starChance + meteorChance + spaceJunkChance;
-            
-            float normalizedStarChance = starChance / totalChance;
-            float normalizedMeteorChance = meteorChance / totalChance;
-            
-            bool spawnStar = randomValue < normalizedStarChance;
-            bool spawnMeteor = randomValue >= normalizedStarChance && randomValue < normalizedStarChance + normalizedMeteorChance;
-            bool spawnSpaceJunk = randomValue >= normalizedStarChance + normalizedMeteorChance;
-            
-            if (!spawnStar && !spawnMeteor && !spawnSpaceJunk) continue;
+            if (totalChance <= 0f) continue;
+
+            float r = Random.value;
+            float pStar = starChance / totalChance;
+            float pMeteor = meteorChance / totalChance;
+
+            bool spawnStar = r < pStar;
+            bool spawnMeteor = r >= pStar && r < pStar + pMeteor;
+            bool spawnSpaceJunk = r >= pStar + pMeteor;
 
             float angle = Random.Range(0f, Mathf.PI * 2);
             float zOffset = Random.Range(40f, 60f) + zSpawnOffset;
@@ -117,44 +145,64 @@ public class SingleTunnelSpawner : MonoBehaviour
             if (spawnStar)
             {
                 float radius = Random.Range(starMinRadius, starMaxRadius);
-                localPos = new Vector3(
-                    Mathf.Cos(angle) * radius,
-                    Mathf.Sin(angle) * radius,
-                    _playerController.transform.position.z + zOffset
-                );
+                localPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, _playerController.transform.position.z + zOffset);
                 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
-
-                Star star = _starFactory.Create(_layerData, _playerController);
-                star.transform.position = worldPos;
-                star.transform.rotation = Quaternion.identity;
+                var star = _starFactory.Create(_layerData, _playerController);
+                star.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
                 spawned.Add(star.gameObject);
             }
-            else 
+            else
             {
                 float radius = Random.Range(dangerMinRadius, dangerMaxRadius);
-                localPos = new Vector3(
-                    Mathf.Cos(angle) * radius,
-                    Mathf.Sin(angle) * radius,
-                    _playerController.transform.position.z + zOffset
-                );
+                localPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, _playerController.transform.position.z + zOffset);
                 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
 
                 if (spawnMeteor)
                 {
-                    Meteor meteor = _meteorFactory.Create(_layerData, _playerStats);
-                    meteor.transform.position = worldPos;
-                    meteor.transform.rotation = Quaternion.identity;
+                    var meteor = _meteorFactory.Create(_layerData, _playerStats);
+                    meteor.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
                     spawned.Add(meteor.gameObject);
                 }
                 else if (spawnSpaceJunk)
                 {
-                    TrashDamage spaceJunk = _spaceTrashFactory.Create(_layerData, _playerStats);
-                    spaceJunk.transform.position = worldPos;
-                    spaceJunk.transform.rotation = Quaternion.identity;
-                    spawned.Add(spaceJunk.gameObject);
+                    var trash = _spaceTrashFactory.Create(_layerData, _playerStats);
+                    trash.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+                    spawned.Add(trash.gameObject);
                 }
             }
         }
+    }
+
+    void TrySpawnHealOrb()
+    {
+        if (Random.value > healChance) return;
+
+        float angle = Random.Range(0f, Mathf.PI * 2);
+        float radius = Random.Range(starMinRadius, starMaxRadius);
+        float zOffset = Random.Range(40f, 60f) + zSpawnOffset;
+
+        Vector3 localPos = new(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, _playerController.transform.position.z + zOffset);
+        Vector3 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
+
+        var orb = _healFactory.Create();
+        orb.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+        spawned.Add(orb.gameObject);
+    }
+
+    void TrySpawnShieldOrb()
+    {
+        if (Random.value > shieldChance) return;
+
+        float angle = Random.Range(0f, Mathf.PI * 2);
+        float radius = Random.Range(starMinRadius, starMaxRadius);
+        float zOffset = Random.Range(40f, 60f) + zSpawnOffset;
+
+        Vector3 localPos = new(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, _playerController.transform.position.z + zOffset);
+        Vector3 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
+
+        var orb = _shieldFactory.Create();
+        orb.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+        spawned.Add(orb.gameObject);
     }
 
     void MoveObjects()
@@ -171,7 +219,7 @@ public class SingleTunnelSpawner : MonoBehaviour
         for (int i = spawned.Count - 1; i >= 0; i--)
         {
             GameObject obj = spawned[i];
-            if (obj == null)
+            if (!obj)
             {
                 spawned.RemoveAt(i);
                 continue;
@@ -187,14 +235,12 @@ public class SingleTunnelSpawner : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        if (tunnelCenter == null) return;
-        
+        if (!tunnelCenter) return;
         Gizmos.color = tunnelColor;
         DrawTunnelGizmo(tunnelCenter.position, tunnelCenter.rotation, outerRadius, tunnelLength);
         Gizmos.color = starZoneColor;
         DrawCircleGizmo(tunnelCenter.position, tunnelCenter.rotation, starMinRadius);
         DrawCircleGizmo(tunnelCenter.position, tunnelCenter.rotation, starMaxRadius);
-        
         Gizmos.color = dangerZoneColor;
         DrawCircleGizmo(tunnelCenter.position, tunnelCenter.rotation, dangerMinRadius);
         DrawCircleGizmo(tunnelCenter.position, tunnelCenter.rotation, dangerMaxRadius);
@@ -216,7 +262,6 @@ public class SingleTunnelSpawner : MonoBehaviour
             Vector3 p2 = center + rotation * circle[j + 1];
             Vector3 p3 = p1 + rotation * (Vector3.forward * length);
             Vector3 p4 = p2 + rotation * (Vector3.forward * length);
-
             Gizmos.DrawLine(p1, p2);
             Gizmos.DrawLine(p3, p4);
             Gizmos.DrawLine(p1, p3);
@@ -232,7 +277,6 @@ public class SingleTunnelSpawner : MonoBehaviour
             float angle = i * Mathf.PI * 2 / segments;
             circle[i] = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, 0);
         }
-
         for (int j = 0; j < segments; j++)
         {
             Vector3 p1 = center + rotation * circle[j];

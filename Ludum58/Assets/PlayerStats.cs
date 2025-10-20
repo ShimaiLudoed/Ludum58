@@ -12,25 +12,28 @@ public class PlayerStats : MonoBehaviour
     [Header("Игровые параметры")] public int maxHP = 3;
     public int currentHP;
 
-    [Header("Неуязвимость")] [SerializeField]
-    private float invulnerabilityTime;
-
+    [Header("Неуязвимость после урона")] 
+    [SerializeField] private float invulnerabilityTime;
     private bool isInvulnerable = false;
 
-    [Header("Спрайты жизней")] public SpriteRenderer[] heartSprites;
+    [Header("Щит игрока")]
+    [SerializeField] private GameObject shieldVisual; // сфера со шейдером
+    [SerializeField] private Color shieldColor = Color.cyan;
+    private bool shieldActive;
+    private float shieldTimer;
 
-    [Header("Cinemachine Shake")] [SerializeField]
-    CinemachineBrain cinemachineBrain;
+    [Header("Спрайты жизней")] 
+    public SpriteRenderer[] heartSprites;
 
+    [Header("Cinemachine Shake")] 
+    [SerializeField] CinemachineBrain cinemachineBrain;
     [SerializeField, Min(0f)] float shakeDuration = 0.5f;
     [SerializeField, Min(0f)] float shakeAmplitude = 2.0f;
     [SerializeField, Min(0f)] float shakeFrequency = 2.0f;
 
-    [Header("Флэш сердец при уроне")] [SerializeField]
-    Color heartsFlashColor = new Color(1f, 0.2f, 0.2f, 1f);
-
+    [Header("Флэш сердец при уроне")] 
+    [SerializeField] Color heartsFlashColor = new Color(1f, 0.2f, 0.2f, 1f);
     [SerializeField, Min(0f)] float heartsFlashDuration = 0.5f;
-
     Coroutine flashCo;
 
     [Inject]
@@ -39,16 +42,33 @@ public class PlayerStats : MonoBehaviour
         _score = score;
     }
 
-void Start()
+    void Start()
     {
         currentHP = maxHP;
         UpdateHeartsUI();
         if (!cinemachineBrain) cinemachineBrain = FindObjectOfType<CinemachineBrain>();
+        if (shieldVisual) shieldVisual.SetActive(false);
+    }
+
+    void Update()
+    {
+        // отсчёт таймера щита
+        if (shieldActive)
+        {
+            shieldTimer -= Time.deltaTime;
+            if (shieldTimer <= 0f)
+            {
+                shieldActive = false;
+                if (shieldVisual) shieldVisual.SetActive(false);
+            }
+        }
     }
 
     public void TakeDamage(int amount)
     {
-        if (isInvulnerable) return;
+        // защита щита и неуязвимости
+        if (shieldActive || isInvulnerable) return;
+
         int previousHP = currentHP;
         currentHP -= amount;
 
@@ -60,10 +80,29 @@ void Start()
             _score.FinishScore();
             Destroy(gameObject);
         }
-        
+
         StartCoroutine(CinemachineShake(shakeDuration, shakeAmplitude, shakeFrequency));
         StartCoroutine(AnimateHeartLoss(previousHP));
         StartCoroutine(InvulnerabilityRoutine());
+    }
+
+    public void Heal(int amount)
+    {
+        if (currentHP <= 0) return;
+        int previousHP = currentHP;
+
+        currentHP = Mathf.Min(maxHP, currentHP + amount);
+        UpdateHeartsUI();
+
+        if (flashCo != null) StopCoroutine(flashCo);
+        flashCo = StartCoroutine(FlashRemainingHearts(0.3f));
+    }
+
+    public void ActivateShield(float duration)
+    {
+        shieldActive = true;
+        shieldTimer = duration;
+        if (shieldVisual) shieldVisual.SetActive(true);
     }
 
     IEnumerator InvulnerabilityRoutine()
@@ -87,7 +126,6 @@ void Start()
                 float timer = 0f;
 
                 Color baseColor = heart.color;
-
                 while (timer < duration)
                 {
                     timer += Time.deltaTime;
@@ -96,7 +134,6 @@ void Start()
                     heart.color = c;
                     yield return null;
                 }
-
                 heart.enabled = false;
             }
         }
@@ -148,10 +185,9 @@ void Start()
         if (!cinemachineBrain) return null;
 
         ICinemachineCamera icam = cinemachineBrain.ActiveVirtualCamera;
-        
         var comp = icam as Component;
         GameObject vcamGO = comp ? comp.gameObject : null;
-        
+
         if (!vcamGO)
         {
             CinemachineCamera best = null;
@@ -169,12 +205,11 @@ void Start()
         }
 
         if (!vcamGO) return null;
-        
         var perlin = vcamGO.GetComponent<CinemachineBasicMultiChannelPerlin>();
         if (!perlin) perlin = vcamGO.AddComponent<CinemachineBasicMultiChannelPerlin>();
         return perlin;
     }
-    
+
     IEnumerator FlashRemainingHearts(float dur)
     {
         if (dur <= 0f || heartSprites == null) yield break;
