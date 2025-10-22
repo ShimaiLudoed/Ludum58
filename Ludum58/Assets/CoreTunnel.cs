@@ -25,6 +25,15 @@ public class SingleTunnelSpawner : MonoBehaviour
     [Header("Ускорение игры")]
     [SerializeField] private float accelerationRate = 0.1f;
 
+    [Header("Общая скорость игры")]
+    [Tooltip("Множитель, влияющий на общую скорость движения всех объектов")]
+    [SerializeField] private float gameSpeedMultiplier = 1f; // Новый параметр
+    public float GameSpeedMultiplier
+    {
+        get => gameSpeedMultiplier;
+        set => gameSpeedMultiplier = value;
+    }
+
     [Header("Вероятности спавна")]
     [Range(0f, 1f)] [SerializeField] private float starChance = 0.3f;
     [Range(0f, 1f)] [SerializeField] private float meteorChance = 0.4f;
@@ -36,9 +45,21 @@ public class SingleTunnelSpawner : MonoBehaviour
     private float _healTimer;
 
     [Header("Щиты")]
-    [SerializeField] private float shieldSpawnInterval = 45f; // пример: раз в 45 секунд
+    [SerializeField] private float shieldSpawnInterval = 45f;
     [Range(0f, 1f)] [SerializeField] private float shieldChance = 0.7f;
     private float _shieldTimer;
+
+    [Header("Замедление времени (SlowOrb)")]
+    [SerializeField] private float slowSpawnInterval = 60f;
+    [Range(0f, 1f)] [SerializeField] private float slowChance = 0.8f;
+    private float _slowTimer;
+
+    [Header("Исчезание у камеры")]
+    [SerializeField] private Camera gameplayCamera;
+    [SerializeField] private float fadeStartDistance = 6f;
+    [SerializeField] private float fadeDuration = 0.25f;
+    [SerializeField] private float killDistance = 1.5f;
+    [SerializeField] private bool disableCollidersOnFade = true;
 
     [Header("Визуализация тоннеля")]
     [SerializeField] private Color tunnelColor = Color.cyan;
@@ -50,6 +71,10 @@ public class SingleTunnelSpawner : MonoBehaviour
     private float zSpawnOffset;
     private float currentMoveSpeed;
 
+    // === публичные свойства для управления скоростью ===
+    public float MoveSpeed { get => currentMoveSpeed; set => currentMoveSpeed = value; }
+    public float BaseMoveSpeed => moveSpeed;
+
     // Zenject зависимости
     private PlayerController _playerController;
     private Meteor.MeteorFactory _meteorFactory;
@@ -57,6 +82,7 @@ public class SingleTunnelSpawner : MonoBehaviour
     private TrashDamage.TrashFactory _spaceTrashFactory;
     private HealOrb.HealOrbFactory _healFactory;
     private ShieldOrb.ShieldOrbFactory _shieldFactory;
+    private SlowOrb.SlowOrbFactory _slowFactory;
     private LayerData _layerData;
     private PlayerStats _playerStats;
 
@@ -69,7 +95,8 @@ public class SingleTunnelSpawner : MonoBehaviour
         PlayerStats playerStats,
         TrashDamage.TrashFactory trashFactory,
         HealOrb.HealOrbFactory healFactory,
-        ShieldOrb.ShieldOrbFactory shieldFactory)
+        ShieldOrb.ShieldOrbFactory shieldFactory,
+        SlowOrb.SlowOrbFactory slowFactory)
     {
         _playerController = playerController;
         _starFactory = starFactory;
@@ -79,14 +106,18 @@ public class SingleTunnelSpawner : MonoBehaviour
         _spaceTrashFactory = trashFactory;
         _healFactory = healFactory;
         _shieldFactory = shieldFactory;
+        _slowFactory = slowFactory;
     }
 
     void Start()
     {
+        if (!gameplayCamera) gameplayCamera = Camera.main;
+
         spawnTimer = 1f / Mathf.Max(spawnSpeed, 0.01f);
         currentMoveSpeed = moveSpeed;
         _healTimer = Mathf.Max(0.01f, healSpawnInterval);
         _shieldTimer = Mathf.Max(0.01f, shieldSpawnInterval);
+        _slowTimer = Mathf.Max(0.01f, slowSpawnInterval);
     }
 
     void Update()
@@ -95,30 +126,37 @@ public class SingleTunnelSpawner : MonoBehaviour
 
         currentMoveSpeed += accelerationRate * Time.deltaTime;
 
-        spawnTimer -= Time.deltaTime;
+        spawnTimer -= Time.deltaTime * gameSpeedMultiplier;
         if (spawnTimer <= 0f)
         {
             SpawnBatch();
             spawnTimer = 1f / Mathf.Max(spawnSpeed, 0.01f);
         }
 
-        _healTimer -= Time.deltaTime;
+        _healTimer -= Time.deltaTime * gameSpeedMultiplier;
         if (_healTimer <= 0f)
         {
             TrySpawnHealOrb();
             _healTimer = Mathf.Max(0.01f, healSpawnInterval);
         }
 
-        _shieldTimer -= Time.deltaTime;
+        _shieldTimer -= Time.deltaTime * gameSpeedMultiplier;
         if (_shieldTimer <= 0f)
         {
             TrySpawnShieldOrb();
             _shieldTimer = Mathf.Max(0.01f, shieldSpawnInterval);
         }
 
+        _slowTimer -= Time.deltaTime * gameSpeedMultiplier;
+        if (_slowTimer <= 0f)
+        {
+            TrySpawnSlowOrb();
+            _slowTimer = Mathf.Max(0.01f, slowSpawnInterval);
+        }
+
         MoveObjects();
         CleanupObjects();
-        zSpawnOffset += currentMoveSpeed * Time.deltaTime;
+        zSpawnOffset += currentMoveSpeed * Time.deltaTime * gameSpeedMultiplier;
     }
 
     void SpawnBatch()
@@ -147,8 +185,10 @@ public class SingleTunnelSpawner : MonoBehaviour
                 float radius = Random.Range(starMinRadius, starMaxRadius);
                 localPos = new Vector3(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, _playerController.transform.position.z + zOffset);
                 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
+
                 var star = _starFactory.Create(_layerData, _playerController);
                 star.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+                ArmDisappear(star.gameObject);
                 spawned.Add(star.gameObject);
             }
             else
@@ -161,12 +201,14 @@ public class SingleTunnelSpawner : MonoBehaviour
                 {
                     var meteor = _meteorFactory.Create(_layerData, _playerStats);
                     meteor.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+                    ArmDisappear(meteor.gameObject);
                     spawned.Add(meteor.gameObject);
                 }
                 else if (spawnSpaceJunk)
                 {
                     var trash = _spaceTrashFactory.Create(_layerData, _playerStats);
                     trash.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+                    ArmDisappear(trash.gameObject);
                     spawned.Add(trash.gameObject);
                 }
             }
@@ -186,6 +228,7 @@ public class SingleTunnelSpawner : MonoBehaviour
 
         var orb = _healFactory.Create();
         orb.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+        ArmDisappear(orb.gameObject);
         spawned.Add(orb.gameObject);
     }
 
@@ -202,6 +245,24 @@ public class SingleTunnelSpawner : MonoBehaviour
 
         var orb = _shieldFactory.Create();
         orb.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+        ArmDisappear(orb.gameObject);
+        spawned.Add(orb.gameObject);
+    }
+
+    void TrySpawnSlowOrb()
+    {
+        if (Random.value > slowChance) return;
+
+        float angle = Random.Range(0f, Mathf.PI * 2);
+        float radius = Random.Range(starMinRadius, starMaxRadius);
+        float zOffset = Random.Range(40f, 60f) + zSpawnOffset;
+
+        Vector3 localPos = new(Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius, _playerController.transform.position.z + zOffset);
+        Vector3 worldPos = tunnelCenter.position + tunnelCenter.rotation * localPos;
+
+        var orb = _slowFactory.Create();
+        orb.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+        ArmDisappear(orb.gameObject);
         spawned.Add(orb.gameObject);
     }
 
@@ -210,7 +271,7 @@ public class SingleTunnelSpawner : MonoBehaviour
         foreach (var obj in spawned)
         {
             if (obj != null)
-                obj.transform.Translate(Vector3.back * currentMoveSpeed * Time.deltaTime, Space.World);
+                obj.transform.Translate(Vector3.back * currentMoveSpeed * Time.deltaTime * gameSpeedMultiplier, Space.World);
         }
     }
 
@@ -231,6 +292,21 @@ public class SingleTunnelSpawner : MonoBehaviour
                 spawned.RemoveAt(i);
             }
         }
+    }
+
+    void ArmDisappear(GameObject go)
+    {
+        if (!go) return;
+
+        var d = go.GetComponent<DisappearNearCamera>();
+        if (!d) d = go.AddComponent<DisappearNearCamera>();
+
+        d.player = _playerController ? _playerController.transform : null;
+        d.targetCamera = gameplayCamera ? gameplayCamera : Camera.main;
+        d.fadeStartDistance = fadeStartDistance;
+        d.fadeDuration = fadeDuration;
+        d.killDistance = killDistance;
+        d.disableCollidersOnFade = disableCollidersOnFade;
     }
 
     void OnDrawGizmos()
@@ -283,5 +359,11 @@ public class SingleTunnelSpawner : MonoBehaviour
             Vector3 p2 = center + rotation * circle[j + 1];
             Gizmos.DrawLine(p1, p2);
         }
+    }
+
+    public float AccelerationRate
+    {
+        get => accelerationRate;
+        set => accelerationRate = value;
     }
 }

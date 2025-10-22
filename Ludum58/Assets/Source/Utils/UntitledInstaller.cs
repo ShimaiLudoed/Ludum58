@@ -18,7 +18,8 @@ public class UntitledInstaller : MonoInstaller
     [SerializeField] private TrashDamage trashDamage;
 
     [SerializeField] private HealOrb healOrb;
-    [SerializeField] private ShieldOrb shieldOrb; // новый префаб щита
+    [SerializeField] private ShieldOrb shieldOrb; // префаб щита
+    [SerializeField] private SlowOrb slowOrb;     // новый префаб замедления
 
     [SerializeField] private SingleTunnelSpawner singleTunnelSpawner;
     [SerializeField] private CutsceneOnClick cutsceneOnClick;
@@ -49,6 +50,7 @@ public class UntitledInstaller : MonoInstaller
         Container.Bind<TrashDamage>().FromInstance(trashDamage).AsTransient();
         Container.Bind<HealOrb>().FromInstance(healOrb).AsTransient();
         Container.Bind<ShieldOrb>().FromInstance(shieldOrb).AsTransient();
+        Container.Bind<SlowOrb>().FromInstance(slowOrb).AsTransient();
 
         // Фабрики
         Container.BindFactory<LayerData, PlayerStats, Meteor, Meteor.MeteorFactory>()
@@ -64,9 +66,13 @@ public class UntitledInstaller : MonoInstaller
                  .FromComponentInNewPrefab(healOrb)
                  .UnderTransformGroup("HealOrbs");
 
-        // Новая фабрика щитов
         Container.BindFactory<ShieldOrb, ShieldOrb.ShieldOrbFactory>()
                  .FromComponentInNewPrefab(shieldOrb)
                  .UnderTransformGroup("ShieldOrbs");
+
+        // Новая фабрика SlowOrb
+        Container.BindFactory<SlowOrb, SlowOrb.SlowOrbFactory>()
+                 .FromComponentInNewPrefab(slowOrb)
+                 .UnderTransformGroup("SlowOrbs");
     }
 }

@@ -2570,11 +2570,20 @@ MonoBehaviour:
   cameraSpeed: 0
   cameraDirection: {x: 0, y: 0, z: 1}
   player: {fileID: 2044848563}
+  playerRb: {fileID: 0}
+  cam: {fileID: 330585545}
+  legacyPlanarBounds: 0
   boundaryX: 16
   boundaryY: 9.5
-  bounceStrength: 200
-  bounceDamping: 7
+  leftMargin: 0.203
+  rightMargin: 0.203
+  bottomMargin: 0.099
+  topMargin: 0.259
+  pullStrength: 100
+  bounceDamping: 100
   boundaryActivationDelay: 15
+  shaker: {fileID: 1936605236}
+  shakeDuration: 0.5
 --- !u!1 &341180075
 GameObject:
   m_ObjectHideFlags: 0
@@ -3681,6 +3690,7 @@ MonoBehaviour:
   trashDamage: {fileID: 6203028573821453928, guid: 2590715579090bf4b9387660beff3bb5, type: 3}
   healOrb: {fileID: 3532775155863127564, guid: 529a371f01d222449a05dc32283ea65e, type: 3}
   shieldOrb: {fileID: 744774152058920212, guid: 1c15fb2edfda68f499b89892e029aee2, type: 3}
+  slowOrb: {fileID: 2285538860066261399, guid: f29d6f74b2613f04ca9ae283c806d01c, type: 3}
   singleTunnelSpawner: {fileID: 615650099}
   cutsceneOnClick: {fileID: 429133594}
   score: {fileID: 2044848566}
@@ -5373,12 +5383,24 @@ PrefabInstance:
       value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: slowChance
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: starChance
       value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: outerRadius
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: fadeDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: killDistance
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: shieldChance
@@ -5393,6 +5415,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: gameplayCamera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: dangerMaxRadius
       value: 45
       objectReference: {fileID: 0}
@@ -5406,6 +5432,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
       propertyPath: healSpawnInterval
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
+      propertyPath: slowSpawnInterval
       value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 5545595180022803288, guid: 9f154f1bbf2f0354894f52ef79e49893, type: 3}
@@ -18011,6 +18041,7 @@ GameObject:
   - component: {fileID: 1936605234}
   - component: {fileID: 1936605233}
   - component: {fileID: 1936605235}
+  - component: {fileID: 1936605236}
   m_Layer: 0
   m_Name: PlayerCam
   m_TagString: Untagged
@@ -18083,16 +18114,30 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1936605232}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 68bb026fafb42b14791938953eaace77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineBasicMultiChannelPerlin
   NoiseProfile: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
   PivotOffset: {x: 0, y: 0, z: 0}
-  AmplitudeGain: 0
-  FrequencyGain: 0
-  m_NoiseOffsets: {x: -29.882324, y: 378.11444, z: -926.53467}
+  AmplitudeGain: 1
+  FrequencyGain: 1
+  m_NoiseOffsets: {x: -892.6162, y: -274.76706, z: -228.08182}
+--- !u!114 &1936605236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1936605232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f70b88fc180af9742926226fb9298a99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VCamNoisePulse
+  vcam: {fileID: 1936605233}
+  duration: 0.5
 --- !u!224 &1973789833 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 3767462722668063390, guid: d934e19037261904597e1b08756d55fd, type: 3}
@@ -19103,6 +19148,10 @@ PrefabInstance:
     - target: {fileID: 2333911400080413792, guid: f51bc1cdb9f6937468ee1452a1d49629, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -3.107
+      objectReference: {fileID: 0}
+    - target: {fileID: 2932015153298555365, guid: f51bc1cdb9f6937468ee1452a1d49629, type: 3}
+      propertyPath: maxHP
+      value: 50000000
       objectReference: {fileID: 0}
     - target: {fileID: 2932015153298555365, guid: f51bc1cdb9f6937468ee1452a1d49629, type: 3}
       propertyPath: replayPanel
