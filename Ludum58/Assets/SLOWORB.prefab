@@ -148,11 +148,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SlowOrb
   slowFactor: 0.5
   transitionSpeed: 1
-  slowDuration: 5
+  slowDuration: 10
   globalVolume: {fileID: 0}
   slowTint: {r: 0.9811321, g: 0.9040626, b: 0, a: 1}
   colorBlendSpeed: 2
   saturationChange: -30
   rotationSpeed: 60
-  pickupCollider: {fileID: 0}
+  pickupCollider: {fileID: 5906949603386660745}
   visuals: []
+  musicSource: {fileID: 0}
+  controlMusicPitch: 1
+  affectAllAudioInScene: 1
+  useSlowFactorForPitch: 1
+  musicPitchAtSlow: 0.1
+  persistUntilReverted: 1
+  extraRevertFrames: 1
+  logDebug: 0
+  delegateToManager: 1
